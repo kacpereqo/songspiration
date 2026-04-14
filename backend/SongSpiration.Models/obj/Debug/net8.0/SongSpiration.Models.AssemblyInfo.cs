@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SongSpiration.Models")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2e888937e41f8ab4adb0ec9a9b73d59e01ad8d70")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1347fda153f16612f91f44530677a5a7776fba43")]
 [assembly: System.Reflection.AssemblyProductAttribute("SongSpiration.Models")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SongSpiration.Models")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

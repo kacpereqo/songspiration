@@ -1,0 +1,16 @@
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpiration.BLL.csproj.AssemblyReference.cache
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpiration.BLL.GeneratedMSBuildEditorConfig.editorconfig
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpiration.BLL.AssemblyInfoInputs.cache
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpiration.BLL.AssemblyInfo.cs
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpiration.BLL.csproj.CoreCompileInputs.cache
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpiration.BLL.sourcelink.json
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\bin\Debug\net8.0\SongSpiration.BLL.deps.json
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\bin\Debug\net8.0\SongSpiration.BLL.dll
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\bin\Debug\net8.0\SongSpiration.BLL.pdb
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\bin\Debug\net8.0\SongSpiration.Models.dll
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\bin\Debug\net8.0\SongSpiration.Models.pdb
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpir.DD6B2A6F.Up2Date
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpiration.BLL.dll
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\refint\SongSpiration.BLL.dll
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpiration.BLL.pdb
+D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\ref\SongSpiration.BLL.dll

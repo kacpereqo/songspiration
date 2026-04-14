@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "SongSpiration.BLL/1.0.0": {
+        "dependencies": {
+          "SongSpiration.Models": "1.0.0"
+        },
+        "runtime": {
+          "SongSpiration.BLL.dll": {}
+        }
+      },
+      "SongSpiration.Models/1.0.0": {
+        "runtime": {
+          "SongSpiration.Models.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SongSpiration.BLL/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SongSpiration.Models/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

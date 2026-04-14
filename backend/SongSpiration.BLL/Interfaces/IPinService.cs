@@ -8,8 +8,10 @@ namespace SongSpiration.BLL.Interfaces;
 public interface IPinService
 {
     Task<PinDto> CreatePinAsync(Guid ownerId, CreatePinDto createDto);
-    Task<PinDto?> GetPinAsync(Guid pinId);
-    Task<IEnumerable<PinDto>> GetPinsAsync(PinFilterDto filter);
-    Task<bool> DeletePinAsync(Guid userId, Guid pinId);
-    Task<bool> ToggleLikeAsync(Guid userId, Guid pinId);
+    Task<PinDto?> GetPinByIdAsync(Guid pinId);
+    Task<PinDto> UpdatePinAsync(Guid pinId, UpdatePinDto updateDto);
+    Task<bool> DeletePinAsync(Guid pinId);
+    Task<IEnumerable<PinDto>> GetAllPinsAsync();
+    Task<IEnumerable<PinDto>> GetPinsByUserIdAsync(Guid userId);
+    Task<IEnumerable<PinDto>> GetPinsByBoardIdAsync(Guid boardId);
 }

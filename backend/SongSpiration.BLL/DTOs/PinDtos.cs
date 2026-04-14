@@ -30,6 +30,14 @@ public class CreatePinDto
     public string? TempFileLocation { get; set; }
 }
 
+public class UpdatePinDto
+{
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public PinVisibility? Visibility { get; set; }
+    public List<Guid>? GenreIds { get; set; }
+}
+
 public class PinFilterDto
 {
     public Instrument? Instrument { get; set; }

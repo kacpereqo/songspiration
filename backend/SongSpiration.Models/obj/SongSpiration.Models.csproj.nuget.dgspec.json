@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj": {}
+    "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj": {}
   },
   "projects": {
-    "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj": {
+    "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj",
+        "projectUniqueName": "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj",
         "projectName": "SongSpiration.Models",
-        "projectPath": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj",
-        "packagesPath": "/home/debilian/.nuget/packages/",
-        "outputPath": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/",
+        "projectPath": "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj",
+        "packagesPath": "C:\\Users\\Filip\\.nuget\\packages\\",
+        "outputPath": "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/debilian/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Filip\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,7 +37,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -53,12 +54,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.26, 8.0.26]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.419/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

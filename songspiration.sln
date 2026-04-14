@@ -1,0 +1,49 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{1AE8ACA6-933B-BF2A-3671-3E2EAC007D16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongSpiration.BLL", "backend\SongSpiration.BLL\SongSpiration.BLL.csproj", "{7B47E9E3-7959-2990-EAD8-52C89BD189C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongSpiration.Models", "backend\SongSpiration.Models\SongSpiration.Models.csproj", "{59ED4506-6896-204D-ADAE-2A6746B6EB79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SongSpiration.Tests", "SongSpiration.Tests", "{426E760C-FDFF-3EAE-CD49-269B94DC8065}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BLL", "BLL", "{150541C4-9FC0-4DD1-12E5-8EFA8FCF2C20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongSpiration.Tests.BLL", "backend\SongSpiration.Tests\BLL\SongSpiration.Tests.BLL.csproj", "{062ED12D-08E5-2C84-539F-7EF3CCBC134B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B47E9E3-7959-2990-EAD8-52C89BD189C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B47E9E3-7959-2990-EAD8-52C89BD189C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B47E9E3-7959-2990-EAD8-52C89BD189C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B47E9E3-7959-2990-EAD8-52C89BD189C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59ED4506-6896-204D-ADAE-2A6746B6EB79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59ED4506-6896-204D-ADAE-2A6746B6EB79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59ED4506-6896-204D-ADAE-2A6746B6EB79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59ED4506-6896-204D-ADAE-2A6746B6EB79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{062ED12D-08E5-2C84-539F-7EF3CCBC134B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{062ED12D-08E5-2C84-539F-7EF3CCBC134B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{062ED12D-08E5-2C84-539F-7EF3CCBC134B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{062ED12D-08E5-2C84-539F-7EF3CCBC134B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7B47E9E3-7959-2990-EAD8-52C89BD189C2} = {1AE8ACA6-933B-BF2A-3671-3E2EAC007D16}
+		{59ED4506-6896-204D-ADAE-2A6746B6EB79} = {1AE8ACA6-933B-BF2A-3671-3E2EAC007D16}
+		{426E760C-FDFF-3EAE-CD49-269B94DC8065} = {1AE8ACA6-933B-BF2A-3671-3E2EAC007D16}
+		{150541C4-9FC0-4DD1-12E5-8EFA8FCF2C20} = {426E760C-FDFF-3EAE-CD49-269B94DC8065}
+		{062ED12D-08E5-2C84-539F-7EF3CCBC134B} = {150541C4-9FC0-4DD1-12E5-8EFA8FCF2C20}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {48D42F06-5E5D-463A-9350-383F9D0AB06F}
+	EndGlobalSection
+EndGlobal

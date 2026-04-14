@@ -12,95 +12,68 @@ public class PinService : IPinService
 {
     public async Task<PinDto> CreatePinAsync(Guid ownerId, CreatePinDto createDto)
     {
-        // TODO: Implement actual pin creation logic
+        // TODO: Implement actual pin creation logic with database persistence
         var pin = new Pin
         {
-            Id = Guid.NewGuid(), // This should be set by the database or repository
+            Id = Guid.NewGuid(),
             OwnerId = ownerId,
             Title = createDto.Title,
             Description = createDto.Description,
             Visibility = createDto.Visibility,
-            // Instrument and Filename would typically be determined during file upload/analysis
-            Instrument = Instrument.Guitar, // Placeholder
-            Filename = "default.gp", // Placeholder
+            Instrument = Instrument.Guitar,
+            Filename = "default.gp",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
 
-        // After saving to DB, map to DTO
-        return MapToDto(pin);
+        return await Task.FromResult(MapToDto(pin));
     }
 
     public async Task<PinDto?> GetPinByIdAsync(Guid pinId)
     {
-        // TODO: Implement actual pin retrieval logic
-        // Placeholder for now
-        return new PinDto
-        {
-            Id = pinId,
-            Title = "Sample Pin",
-            OwnerName = "Test User", // This should come from a user service
-            Instrument = Instrument.Guitar,
-            Genres = new List<string> { "Rock", "Blues" }
-        };
+        // TODO: Implement actual pin retrieval logic from database
+        return await Task.FromResult<PinDto?>(null);
     }
 
     public async Task<PinDto> UpdatePinAsync(Guid pinId, UpdatePinDto updateDto)
     {
         // TODO: Implement actual pin update logic
-        // Placeholder for now
         var updatedPin = new PinDto
         {
             Id = pinId,
-            Title = updateDto.Title,
+            Title = updateDto.Title ?? "",
             Description = updateDto.Description,
-            Visibility = updateDto.Visibility,
-            Instrument = Instrument.Guitar, // Placeholder, should be existing value or updated if allowed
-            Filename = "updated.gp", // Placeholder
-            CreatedAt = DateTime.UtcNow.AddDays(-1), // Assuming it was created before
-            UpdatedAt = DateTime.UtcNow
+            Visibility = updateDto.Visibility ?? PinVisibility.Public,
+            Instrument = Instrument.Guitar,
+            Filename = "updated.gp",
+            CreatedAt = DateTime.UtcNow.AddDays(-1)
         };
 
-        return updatedPin;
+        return await Task.FromResult(updatedPin);
     }
 
     public async Task<bool> DeletePinAsync(Guid pinId)
     {
         // TODO: Implement actual pin deletion logic
-        return await Task.FromResult(true); // Placeholder
+        return await Task.FromResult(false);
     }
 
     public async Task<IEnumerable<PinDto>> GetAllPinsAsync()
     {
-        // TODO: Implement actual retrieval of all pins
-        // Placeholder for now
-        return new List<PinDto>
-        {
-            new PinDto { Id = Guid.NewGuid(), Title = "All Pins 1", OwnerName = "User A" },
-            new PinDto { Id = Guid.NewGuid(), Title = "All Pins 2", OwnerName = "User B" }
-        };
+        // TODO: Implement actual retrieval of all pins from database
+        return await Task.FromResult<IEnumerable<PinDto>>(new List<PinDto>());
     }
 
     public async Task<IEnumerable<PinDto>> GetPinsByUserIdAsync(Guid userId)
     {
-        // TODO: Implement actual retrieval of pins by user ID
-        // Placeholder for now
-        return new List<PinDto>
-        {
-            new PinDto { Id = Guid.NewGuid(), Title = "User's Pin 1", OwnerName = "Current User", OwnerId = userId },
-            new PinDto { Id = Guid.NewGuid(), Title = "User's Pin 2", OwnerName = "Current User", OwnerId = userId }
-        };
+        // TODO: Implement actual retrieval of pins by user ID from database
+        return await Task.FromResult<IEnumerable<PinDto>>(new List<PinDto>());
     }
 
     public async Task<IEnumerable<PinDto>> GetPinsByBoardIdAsync(Guid boardId)
     {
-        // TODO: Implement actual retrieval of pins by board ID
-        // Placeholder for now
-        return new List<PinDto>
-        {
-            new PinDto { Id = Guid.NewGuid(), Title = "Board Pin 1", OwnerName = "Board Owner" },
-            new PinDto { Id = Guid.NewGuid(), Title = "Board Pin 2", OwnerName = "Board Owner" }
-        };
+        // TODO: Implement actual retrieval of pins by board ID from database
+        return await Task.FromResult<IEnumerable<PinDto>>(new List<PinDto>());
     }
 
     private PinDto MapToDto(Pin pin)
