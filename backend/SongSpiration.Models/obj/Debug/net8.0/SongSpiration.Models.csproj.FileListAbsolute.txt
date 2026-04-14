@@ -1,0 +1,12 @@
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/bin/Debug/net8.0/SongSpiration.Models.deps.json
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/bin/Debug/net8.0/SongSpiration.Models.dll
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/bin/Debug/net8.0/SongSpiration.Models.pdb
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/Debug/net8.0/SongSpiration.Models.GeneratedMSBuildEditorConfig.editorconfig
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/Debug/net8.0/SongSpiration.Models.AssemblyInfoInputs.cache
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/Debug/net8.0/SongSpiration.Models.AssemblyInfo.cs
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/Debug/net8.0/SongSpiration.Models.csproj.CoreCompileInputs.cache
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/Debug/net8.0/SongSpiration.Models.sourcelink.json
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/Debug/net8.0/SongSpiration.Models.dll
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/Debug/net8.0/refint/SongSpiration.Models.dll
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/Debug/net8.0/SongSpiration.Models.pdb
+/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/Debug/net8.0/ref/SongSpiration.Models.dll
