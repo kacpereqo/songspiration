@@ -3,6 +3,8 @@ title SongSpiration / MusicPin — Diagram klas (model danych)
 
 ' Ustawienia czytelności
 hide methods
+
+' Test comment to trigger workflow
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
 
