@@ -51,89 +51,15 @@ Projekt opiera się na **architekturze warstwowej**, która zapewnia:
 - **Skalowalność** (każda warstwa może być rozwijana niezależnie).
 
 #### **Diagram Architektury**
-```plantuml
-@startuml SongSpiration - Architektura Systemu
+![Architektura Systemu SongSpiration](https://i.imgur.com/EXAMPLE_PLACEHOLDER.png)
 
-title Architektura Systemu SongSpiration
-
-skinparam monochrome true
-skinparam shadowing false
-
-' ===== Warstwy Systemu =====
-rectangle "Interfejs Użytkownika (UI)" as UI {
-  [Vue 3]
-}
-
-rectangle "Warstwa API" as API {
-  [ASP.NET Core Web API]
-}
-
-rectangle "Warstwa Logiki Biznesowej (BLL)" as BLL {
-  [C# / .NET 8]
-}
-
-rectangle "Warstwa Dostępu do Danych (DAL)" as DAL {
-  [Entity Framework Core]
-}
-
-rectangle "Warstwa Modeli" as Models {
-  [C# / .NET 8]
-}
-
-database "Baza Danych" as DB {
-  [SQL Server]
-}
-
-' ===== Relacje =====
-UI --> API : REST API (HTTP/HTTPS)
-API --> BLL : Wywołania serwisów
-BLL --> DAL : Wywołania repozytoriów
-DAL --> Models : Operacje na modelach
-Models --> DB : Mapowanie ORM
-
-' ===== Opis Warstw =====
-note right of UI
-<b>Interfejs Użytkownika (Vue 3):</b>
-- Strona główna (Feed)
-- Widok pinu (AlphaTab)
-- Profil użytkownika
-- Upload/edycja pinu
-end note
-
-note right of API
-<b>Warstwa API (ASP.NET Core):</b>
-- Kontrolery (UserController, PinController)
-- Autoryzacja (JWT)
-- Walidacja danych
-end note
-
-note right of BLL
-<b>Warstwa Logiki Biznesowej:</b>
-- Serwisy (UserService, PinService)
-- Logika filtrowania, polubień
-- DTOs (UserDtos, PinDtos)
-end note
-
-note right of DAL
-<b>Warstwa Dostępu do Danych:</b>
-- Repozytoria (UserRepository, PinRepository)
-- Entity Framework Core
-end note
-
-note right of Models
-<b>Warstwa Modeli:</b>
-- Encje (User, Pin, Genre)
-- Enumeracje (Instrument, PinVisibility)
-end note
-
-note right of DB
-<b>Baza Danych (SQL Server):</b>
-- Tabele (User, Pin, Genre, Like)
-- Relacje (PinGenre jako many-to-many)
-end note
-
-@enduml
-```
+> **Opis warstw:**
+> - **Interfejs Użytkownika (Vue 3):** Strona główna (Feed), Widok pinu (AlphaTab), Profil użytkownika, Upload/edycja pinu.
+> - **Warstwa API (ASP.NET Core):** Kontrolery (`UserController`, `PinController`), Autoryzacja (JWT), Walidacja danych.
+> - **Warstwa Logiki Biznesowej (C# / .NET 8):** Serwisy (`UserService`, `PinService`), Logika filtrowania, DTOs.
+> - **Warstwa Dostępu do Danych (Entity Framework Core):** Repozytoria (`UserRepository`, `PinRepository`).
+> - **Warstwa Modeli:** Encje (`User`, `Pin`, `Genre`), Enumeracje (`Instrument`, `PinVisibility`).
+> - **Baza Danych (SQL Server):** Tabele (`User`, `Pin`, `Genre`, `Like`), Relacje (`PinGenre` jako many-to-many).
 
 ---
 
