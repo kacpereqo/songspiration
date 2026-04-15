@@ -51,7 +51,7 @@ Projekt opiera się na **architekturze warstwowej**, która zapewnia:
 - **Skalowalność** (każda warstwa może być rozwijana niezależnie).
 
 #### **Diagram Architektury**
-![Architektura Systemu SongSpiration](https://i.imgur.com/EXAMPLE_PLACEHOLDER.png)
+![Architektura Systemu SongSpiration](https://raw.githubusercontent.com/kacpereqo/songspiration/addreadme/specs/project/architecture-diagram.png)
 
 > **Opis warstw:**
 > - **Interfejs Użytkownika (Vue 3):** Strona główna (Feed), Widok pinu (AlphaTab), Profil użytkownika, Upload/edycja pinu.
