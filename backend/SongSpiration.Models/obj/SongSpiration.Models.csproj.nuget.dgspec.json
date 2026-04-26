@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj": {}
+    "d:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj": {}
   },
   "projects": {
-    "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj": {
+    "d:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj",
+        "projectUniqueName": "d:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj",
         "projectName": "SongSpiration.Models",
-        "projectPath": "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj",
+        "projectPath": "d:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj",
         "packagesPath": "C:\\Users\\Filip\\.nuget\\packages\\",
-        "outputPath": "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\obj\\",
+        "outputPath": "d:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Filip\\AppData\\Roaming\\NuGet\\NuGet.Config"

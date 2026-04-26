@@ -4019,8 +4019,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj": {
-              "projectPath": "D:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj"
+            "d:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj": {
+              "projectPath": "d:\\studia\\taiib\\projekt\\songspiration\\backend\\SongSpiration.Models\\SongSpiration.Models.csproj"
             }
           }
         }
