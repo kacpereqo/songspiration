@@ -14,3 +14,5 @@ D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0
 D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\refint\SongSpiration.BLL.dll
 D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\SongSpiration.BLL.pdb
 D:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\obj\Debug\net8.0\ref\SongSpiration.BLL.dll
+d:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\bin\Debug\net8.0\SongSpiration.DAL.dll
+d:\studia\taiib\projekt\songspiration\backend\SongSpiration.BLL\bin\Debug\net8.0\SongSpiration.DAL.pdb

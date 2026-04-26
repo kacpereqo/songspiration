@@ -6,19 +6,21 @@ using System.Collections.Generic;
 using SongSpiration.BLL.DTOs;
 using SongSpiration.BLL.Interfaces;
 using SongSpiration.BLL.Services;
-using SongSpiration.Models;
+using SongSpiration.DAL.Interfaces;
+using SongSpiration.Models.Entities;
+using SongSpiration.Models.Enums;
 
 namespace SongSpiration.Tests.BLL
 {
     public class PinServiceTests
     {
-        private readonly Mock<IPinService> _mockPinService;
+        private readonly Mock<IPinRepository> _mockPinRepository;
         private readonly PinService _pinService;
 
         public PinServiceTests()
         {
-            _mockPinService = new Mock<IPinService>();
-            _pinService = new PinService(); // Assuming PinService has a parameterless constructor or dependencies are mocked
+            _mockPinRepository = new Mock<IPinRepository>();
+            _pinService = new PinService(_mockPinRepository.Object);
         }
 
         [Fact]
@@ -62,7 +64,7 @@ namespace SongSpiration.Tests.BLL
         {
             // Arrange
             var pinId = Guid.NewGuid();
-            _mockPinService.Setup(s => s.GetPinByIdAsync(pinId)).ReturnsAsync((PinDto)null);
+            _mockPinRepository.Setup(s => s.GetByIdWithDetailsAsync(pinId)).ReturnsAsync((Pin)null);
 
             // Act
             var result = await _pinService.GetPinByIdAsync(pinId);

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SongSpiration.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+011ae1f7fbf0e2c6b2b36eee98d5f8f591ebf84c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+089439dfd15d9aa5ae464a7faf99a94351654871")]
 [assembly: System.Reflection.AssemblyProductAttribute("SongSpiration.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SongSpiration.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
