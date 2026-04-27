@@ -22,6 +22,7 @@
    <ItemGroup>
      <ProjectReference Include="..\..\SongSpiration.BLL\SongSpiration.BLL.csproj" />
      <ProjectReference Include="..\..\SongSpiration.Models\SongSpiration.Models.csproj" />
+     <ProjectReference Include="..\..\SongSpiration.DAL\SongSpiration.DAL.csproj" />
    </ItemGroup>
 
 </Project>
