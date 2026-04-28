@@ -22,5 +22,5 @@ jobs:
           application_name: 'songspiration' # wpisz nazwę z AWS EB
           environment_name: 'Songspiration-env' # wpisz nazwę środowiska z AWS EB
           version_label: "ver-${{ github.sha }}"
-          region: eu-central-1 # Upewnij się, że region jest poprawny (np. eu-central-1 to Frankfurt)
+          region: us-east-1 # Upewnij się, że region jest poprawny (np. eu-central-1 to Frankfurt)
           deployment_package: deploy.zip
