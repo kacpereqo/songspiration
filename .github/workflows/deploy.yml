@@ -19,8 +19,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: 'Twoja-Nazwa-Aplikacji' # wpisz nazwę z AWS EB
-          environment_name: 'Twoja-Nazwa-Srodowiska-env' # wpisz nazwę środowiska z AWS EB
+          application_name: 'songspiration' # wpisz nazwę z AWS EB
+          environment_name: 'Songspiration-env' # wpisz nazwę środowiska z AWS EB
           version_label: "ver-${{ github.sha }}"
           region: eu-central-1 # Upewnij się, że region jest poprawny (np. eu-central-1 to Frankfurt)
           deployment_package: deploy.zip
