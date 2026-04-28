@@ -23,11 +23,12 @@ jobs:
         with:
           dotnet-version: '8.x'
 
+# Szukaj sekcji 'build' i popraw ścieżkę do projektu
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build backend/SongSpiration.API/SongSpiration.API.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish backend/SongSpiration.API/SongSpiration.API.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
