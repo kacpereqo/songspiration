@@ -36,7 +36,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // Allow frontend origin
+        policy.WithOrigins("https://songspiration.vercel.app") // Allow frontend origin
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
