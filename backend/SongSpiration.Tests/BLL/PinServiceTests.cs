@@ -14,13 +14,13 @@ namespace SongSpiration.Tests.BLL
 {
     public class PinServiceTests
     {
-        private readonly Mock<IPinRepository> _mockPinRepository;
+        private readonly Mock<IPinRepository> _pinRepositoryMock;
         private readonly PinService _pinService;
 
         public PinServiceTests()
         {
-            _mockPinRepository = new Mock<IPinRepository>();
-            _pinService = new PinService(_mockPinRepository.Object);
+            _pinRepositoryMock = new Mock<IPinRepository>();
+            _pinService = new PinService(_pinRepositoryMock.Object);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace SongSpiration.Tests.BLL
         {
             // Arrange
             var pinId = Guid.NewGuid();
-            _mockPinRepository.Setup(s => s.GetByIdWithDetailsAsync(pinId)).ReturnsAsync((Pin?)null);
+            _pinRepositoryMock.Setup(s => s.GetByIdWithDetailsAsync(pinId)).ReturnsAsync((Pin?)null);
 
             // Act
             var result = await _pinService.GetPinByIdAsync(pinId);
@@ -79,6 +79,9 @@ namespace SongSpiration.Tests.BLL
             // Arrange
             var pinId = Guid.NewGuid();
             var updateDto = new UpdatePinDto { Title = "Updated Title", Description = "Updated Description", Visibility = PinVisibility.Private };
+            var pin = new Pin { Id = pinId, Title = "Original Title", Description = "Original Description", Visibility = PinVisibility.Public, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
+
+            _pinRepositoryMock.Setup(repo => repo.GetByIdWithDetailsAsync(pinId)).ReturnsAsync(pin);
 
             // Act
             var result = await _pinService.UpdatePinAsync(pinId, updateDto);
