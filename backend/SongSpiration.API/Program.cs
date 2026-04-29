@@ -77,17 +77,11 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(
-                "https://songspiration.vercel.app", 
-                "http://localhost:5173", // Dodaj to (Vite domyślnie)
-                "http://localhost:3000", // Czasami używany port
-                "http://localhost:5174"  // Na wypadek gdyby Vite zmienił port
-              ) 
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.AllowAnyOrigin()   // Zezwala na każde źródło (wszystkie domeny i localhosty)
+              .AllowAnyHeader()   // Zezwala na wszystkie nagłówki
+              .AllowAnyMethod();  // Zezwala na wszystkie metody (GET, POST, PUT, DELETE, itp.)
     });
 });
-
 var app = builder.Build();
 
 // --- Middleware Pipeline ---
