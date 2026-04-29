@@ -1,7 +1,7 @@
 name: Deploy Backend
 on:
   push:
-    branches: [ main ] # Uruchomi się, gdy zrobisz push do main
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -10,17 +10,19 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
-      # Pakujemy backend do ZIPa (EB potrzebuje paczki z Dockerfile)
+      # Kluczowa zmiana: Pakujemy tylko to, co niezbędne, 
+      # zachowując strukturę folderu 'backend' i plik Dockerfile w głównym katalogu
       - name: Generate Deployment Package
-        run: zip -r deploy.zip . -x "frontend/**" "node_modules/**" ".git/**"
+        run: |
+          zip -r deploy.zip Dockerfile backend/ -x "**/bin/*" "**/obj/*" "backend/SongSpiration.API/wwwroot/uploads/*"
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v22
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: 'songspiration' # wpisz nazwę z AWS EB
-          environment_name: 'Songspiration-env' # wpisz nazwę środowiska z AWS EB
+          application_name: 'songspiration'
+          environment_name: 'Songspiration-env'
           version_label: "ver-${{ github.sha }}"
-          region: us-east-1 # Upewnij się, że region jest poprawny (np. eu-central-1 to Frankfurt)
+          region: us-east-1
           deployment_package: deploy.zip
