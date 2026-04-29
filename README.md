@@ -157,7 +157,28 @@ Projekt opiera się na **architekturze warstwowej**, która zapewnia:
 
 ---
 
-## 📝 Licencja
-Projekt jest udostępniony na licencji **MIT**. Szczegóły w pliku `LICENSE`.
+## 📝 Wyniki Testów Jednostkowych
+
+### **Jak Uruchomić Testy Jednostkowe?**
+
+Aby uruchomić testy jednostkowe, wykonaj następujące kroki:
+
+1. Przejdź do katalogu głównego projektu:
+   ```bash
+   cd /ścieżka/do/projektu/songspiration
+   ```
+
+2. Uruchom testy jednostkowe dla warstwy BLL:
+   ```bash
+   dotnet test backend/SongSpiration.Tests/BLL/SongSpiration.Tests.BLL.csproj
+   ```
+
+3. **Interpretacja wyników testów**:
+   - **18/18 testów zakończonych powodzeniem**: Wszystkie testy jednostkowe działają poprawnie.
+   - **0/18 testów zakończonych niepowodzeniem**: Brak błędów w testach jednostkowych.
+   - **Wyniki testów jednostkowych** zostały szczegółowo opisane w pliku `backend/SongSpiration.Tests/BLL/README.md`.
 
 ---
+
+## 📝 Licencja
+Projekt jest udostępniony na licencji **MIT**. Szczegóły w pliku `LICENSE`.

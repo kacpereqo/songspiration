@@ -98,18 +98,9 @@ Testy jednostkowe dla serwisu `FilterService`, który obsługuje funkcjonalnośc
 
 ---
 
-## Testy Jednostkowe, Które Nie Działają
+## Wyniki Testów Jednostkowych
 
-### **Test: UpdatePinAsync_ShouldReturnUpdatedPinDto**
-- **Lokalizacja**: `PinServiceTests.cs`
-- **Błąd**:
-  ```
-  System.Collections.Generic.KeyNotFoundException : Pin with ID 75b12d8e-9115-4433-8500-b003de063704 not found.
-  ```
-- **Przyczyna**:
-  - Test ten nie jest częścią zadań zrealizowanych w etapie 2.
-  - Test ten dotyczy serwisu `PinService`, który nie został zaktualizowany w ramach etapu 2.
-  - Błąd wynika z faktu, że metoda `UpdatePinAsync` w `PinService` próbuje zaktualizować pin o losowym ID, który nie istnieje w repozytorium.
-- **Rozwiązanie**:
-  - Aby naprawić ten test, należy zaktualizować implementację `PinService`, aby używała istniejącego pin ID lub dodać pin do repozytorium przed wywołaniem metody `UpdatePinAsync`.
-  - Alternatywnie, test ten może zostać pominięty lub usunięty, jeśli nie jest wymagany w kontekście zadań zrealizowanych w etapie 2.
+### **Podsumowanie**
+- **Wszystkie 18 testów jednostkowych** zakończyło się powodzeniem.
+- Testy jednostkowe zostały zaktualizowane i naprawione, aby działały poprawnie.
+- Test `UpdatePinAsync_ShouldReturnUpdatedPinDto` został naprawiony poprzez dodanie mockowania istnienia pinu w repozytorium.
