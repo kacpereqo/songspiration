@@ -15,18 +15,34 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      # Budujemy aplikację bezpośrednio na GitHubie
+      # 1. Przywracanie wszystkich zależności NuGet
+      - name: Restore dependencies
+        run: dotnet restore backend/SongSpiration.API/SongSpiration.API.csproj
+
+      # 2. Budowanie gotowej paczki (linux-x64) bezpośrednio na GitHubie
       - name: dotnet publish
-        run: dotnet publish backend/SongSpiration.API/SongSpiration.API.csproj -c Release -o publish -r linux-x64 --self-contained false
+        run: |
+          dotnet publish backend/SongSpiration.API/SongSpiration.API.csproj \
+            -c Release \
+            -o publish \
+            -r linux-x64 \
+            --self-contained false \
+            --no-restore
 
-      # Kopiujemy bazę danych do folderu publish, żeby była w paczce
-      - name: Copy DB
-        run: cp backend/SongSpiration.API/SongSpiration.db publish/
+      # 3. Kopiowanie bazy danych do folderu publikacji
+      - name: Copy Database
+        run: |
+          if [ -f "backend/SongSpiration.API/SongSpiration.db" ]; then
+            cp backend/SongSpiration.API/SongSpiration.db publish/
+          else
+            echo "Warning: SongSpiration.db not found!"
+          fi
 
-      # Pakujemy TYLKO Dockerfile i gotowe pliki binarne
+      # 4. Pakowanie TYLKO Dockerfile i gotowego folderu publish
       - name: Generate Deployment Package
         run: zip -r deploy.zip Dockerfile publish/
 
+      # 5. Wysyłka do AWS Elastic Beanstalk
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v22
         with:
