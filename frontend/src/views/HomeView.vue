@@ -10,7 +10,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 // Funkcja pobierająca dane z backendu
 const fetchPins = async () => {
   try {
-    const response = await fetch(`${apiUrl}/Pins`);
+    const response = await fetch(`${apiUrl}/api/Pins`);
     
     if (!response.ok) throw new Error('Błąd połączenia z serwerem');
     
@@ -20,7 +20,7 @@ const fetchPins = async () => {
     pins.value = data.map(pin => ({
       ...pin,
       // Tworzymy pełny adres URL do pliku gp5 na podstawie nazwy z API
-      filePath: `${apiUrl}/Pins/files/${pin.filename}`,
+      filePath: `${apiUrl}/api/Pins/files/${pin.filename}`,
       // Mapujemy gatunki (backend zwraca ["Rock"], komponent może oczekiwać innej struktury)
       // Jeśli Twój komponent Pin oczekuje pinGenres, dostosowujemy to tutaj:
       pinGenres: pin.genres.map(g => ({ genre: { name: g } }))

@@ -84,7 +84,7 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
-// --- Middleware Pipeline ---
+// --- Middleware Pipeline ---g
 
 if (app.Environment.IsDevelopment())
 {

@@ -115,7 +115,7 @@ const handleSubmit = async () => {
 
   try {
     // apiUrl zawiera już "/api", więc doklejamy tylko "/Pins/upload"
-    const response = await fetch(`${apiUrl}/Pins/upload`, {
+    const response = await fetch(`${apiUrl}/api/Pins/upload`, {
       method: 'POST',
       body: formData,
       // WAŻNE: Nie ustawiamy nagłówka Content-Type! Przeglądarka zrobi to sama.
