@@ -17,7 +17,7 @@ jobs:
 
       # 1. Przywracanie wszystkich zależności NuGet
       - name: Restore dependencies
-        run: dotnet restore backend/SongSpiration.API/SongSpiration.API.csproj
+        run: dotnet restore backend/SongSpiration.API/SongSpiration.API.csproj -r linux-x64
 
       # 2. Budowanie gotowej paczki (linux-x64) bezpośrednio na GitHubie
       - name: dotnet publish
