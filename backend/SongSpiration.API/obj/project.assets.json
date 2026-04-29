@@ -4583,19 +4583,19 @@
     ]
   },
   "packageFolders": {
-    "/home/oskarito/.nuget/packages/": {}
+    "/home/debilian/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.API/SongSpiration.API.csproj",
+      "projectUniqueName": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.API/SongSpiration.API.csproj",
       "projectName": "SongSpiration.API",
-      "projectPath": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.API/SongSpiration.API.csproj",
-      "packagesPath": "/home/oskarito/.nuget/packages/",
-      "outputPath": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.API/obj/",
+      "projectPath": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.API/SongSpiration.API.csproj",
+      "packagesPath": "/home/debilian/.nuget/packages/",
+      "outputPath": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/oskarito/.nuget/NuGet/NuGet.Config"
+        "/home/debilian/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -4607,8 +4607,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.BLL/SongSpiration.BLL.csproj": {
-              "projectPath": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.BLL/SongSpiration.BLL.csproj"
+            "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.BLL/SongSpiration.BLL.csproj": {
+              "projectPath": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.BLL/SongSpiration.BLL.csproj"
             }
           }
         }
@@ -4617,6 +4617,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -4667,7 +4672,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/8.0.125/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.419/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

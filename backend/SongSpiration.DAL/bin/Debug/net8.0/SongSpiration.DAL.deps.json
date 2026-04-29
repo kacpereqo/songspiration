@@ -910,7 +910,10 @@
       },
       "SongSpiration.Models/1.0.0": {
         "runtime": {
-          "SongSpiration.Models.dll": {}
+          "SongSpiration.Models.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

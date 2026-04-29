@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj": {}
+    "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj": {}
   },
   "projects": {
-    "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj": {
+    "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj",
+        "projectUniqueName": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj",
         "projectName": "SongSpiration.Models",
-        "projectPath": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj",
-        "packagesPath": "/home/oskarito/.nuget/packages/",
-        "outputPath": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.Models/obj/",
+        "projectPath": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/SongSpiration.Models.csproj",
+        "packagesPath": "/home/debilian/.nuget/packages/",
+        "outputPath": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.Models/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/oskarito/.nuget/NuGet/NuGet.Config"
+          "/home/debilian/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -32,6 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -53,7 +58,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/8.0.125/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.419/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

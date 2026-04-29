@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "rAEePbTNmXlCgDZZrKSiDLRu36zSKdDYjbFD4RG/Sqo=",
+  "Hash": "7/iuWJHawGLV6LdB61lyppKvWqHVFBd/A+QOKwhClQs=",
   "Source": "SongSpiration.API",
   "BasePath": "_content/SongSpiration.API",
   "Mode": "Default",
@@ -10,19 +10,19 @@
     {
       "Name": "SongSpiration.API/wwwroot",
       "Source": "SongSpiration.API",
-      "ContentRoot": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.API/wwwroot/",
+      "ContentRoot": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.API/wwwroot/",
       "BasePath": "_content/SongSpiration.API",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.API/wwwroot/uploads/7642a26d-5e22-41ac-9d39-6cb0de2e8202.gp5",
+      "Identity": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.API/wwwroot/uploads/c0cd9a5c-cf19-4f0f-9a0a-aeaa14a9268d.gp5",
       "SourceId": "SongSpiration.API",
       "SourceType": "Discovered",
-      "ContentRoot": "/home/oskarito/Desktop/project/songspiration/backend/SongSpiration.API/wwwroot/",
+      "ContentRoot": "/home/debilian/Dokumenty/songspiration/backend/SongSpiration.API/wwwroot/",
       "BasePath": "_content/SongSpiration.API",
-      "RelativePath": "uploads/7642a26d-5e22-41ac-9d39-6cb0de2e8202.gp5",
+      "RelativePath": "uploads/c0cd9a5c-cf19-4f0f-9a0a-aeaa14a9268d.gp5",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -33,7 +33,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/uploads/7642a26d-5e22-41ac-9d39-6cb0de2e8202.gp5"
+      "OriginalItemSpec": "wwwroot/uploads/c0cd9a5c-cf19-4f0f-9a0a-aeaa14a9268d.gp5"
     }
   ]
 }
