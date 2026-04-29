@@ -1,47 +1,33 @@
-using AutoMapper;
-using SongSpiration.DAL.Interfaces;
-using SongSpiration.Models.Entities;
-using SongSpiration.BLL.DTOs;
-using SongSpiration.BLL.Interfaces;
-
 namespace SongSpiration.BLL.Services
 {
-    public class CollectionService : ICollectionService
+    public class CollectionService
     {
-        private readonly ICollectionRepository _collectionRepository;
-        private readonly IMapper _mapper;
-
-        public CollectionService(ICollectionRepository collectionRepository, IMapper mapper)
+        public CollectionService()
         {
-            _collectionRepository = collectionRepository;
-            _mapper = mapper;
         }
 
-        public async Task<CollectionDto> CreateCollection(CollectionCreateDto collectionDto)
+        public async Task CreateCollection(string title, string description, Guid userId)
         {
-            var collection = _mapper.Map<Collection>(collectionDto);
-            collection.Id = Guid.NewGuid();
-            collection.CreatedAt = DateTime.UtcNow;
-            collection.UpdatedAt = DateTime.UtcNow;
-
-            await _collectionRepository.Add(collection);
-            return _mapper.Map<CollectionDto>(collection);
+            // Implementacja tymczasowa - brak repozytorium
+            await Task.CompletedTask;
         }
 
-        public async Task<CollectionDto> GetCollectionById(Guid collectionId)
+        public async Task GetCollectionById(Guid collectionId)
         {
-            var collection = await _collectionRepository.GetById(collectionId);
-            return _mapper.Map<CollectionDto>(collection);
+            // Implementacja tymczasowa - brak repozytorium
+            await Task.CompletedTask;
         }
 
         public async Task AddPinToCollection(Guid collectionId, Guid pinId)
         {
-            await _collectionRepository.AddPinToCollection(collectionId, pinId);
+            // Implementacja tymczasowa - brak repozytorium
+            await Task.CompletedTask;
         }
 
         public async Task RemovePinFromCollection(Guid collectionId, Guid pinId)
         {
-            await _collectionRepository.RemovePinFromCollection(collectionId, pinId);
+            // Implementacja tymczasowa - brak repozytorium
+            await Task.CompletedTask;
         }
     }
 }
