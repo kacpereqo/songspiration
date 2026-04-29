@@ -21,23 +21,24 @@ songspiration/
 
 ### **Co jest już zrobione?**
 1. **Modele danych** – Zdefiniowane encje (`User`, `Pin`, `Genre`, `Like`, `AuthToken`, `PinGenre`) oraz enumeracje (`Instrument`, `PinVisibility`, `TokenType`).
-2. **Interfejsy serwisów** – Zdefiniowane interfejsy dla `PinService` i `UserService` w warstwie BLL.
-3. **DTOs** – Modele transferu danych dla pinów (`PinDtos`) i użytkowników (`UserDtos`).
+2. **Interfejsy serwisów** – Zdefiniowane interfejsy dla `PinService`, `UserService`, `CollectionService`, `FilterService` i `LikeService` w warstwie BLL.
+3. **DTOs** – Modele transferu danych dla pinów (`PinDtos`), użytkowników (`UserDtos`) oraz kolekcji, filtrów i polubień.
 4. **Struktura projektu** – Podział na warstwy (API, BLL, DAL, Models).
-5. **Specyfikacja** – Pliki `spec.md`, `class-diagram.puml`, `db-erd.puml` opisujące wymagania i modele danych.
+5. **Implementacja serwisów BLL** – Pełna implementacja `PinService` i `UserService` z logiką biznesową.
+6. **Implementacja repozytoriów DAL** – Pełna implementacja `PinRepository` i `UserRepository` z Entity Framework Core.
+7. **Testy jednostkowe** – Testy dla `PinService` i `UserService` z użyciem Moq i xUnit.
+8. **Testy integracyjne** – Testy integracyjne w projekcie `TestImplementation` sprawdzające działanie całego stacku.
+9. **Specyfikacja** – Pliki `spec.md`, `class-diagram.puml`, `db-erd.puml` opisujące wymagania i modele danych.
+10. **Konfiguracja API** – Kontrolery `UserController` i `PinController` z autoryzacją JWT.
+11. **Baza danych** – Konfiguracja Entity Framework Core z migracjami i schematem bazy danych.
 
 ### **Co zostało do zrobienia?**
 | Warstwa          | Zadania                                                                 |
 |------------------|------------------------------------------------------------------------|
-| **API**          | Implementacja kontrolerów (`UserController`, `PinController`).        |
-|                  | Konfiguracja autoryzacji (JWT) i walidacji danych.                    |
-| **BLL**          | Pełna implementacja serwisów (`PinService`, `UserService`).            |
-|                  | Logika filtrowania, sortowania, polubień.                              |
-| **DAL**          | Implementacja repozytoriów (`UserRepository`, `PinRepository`).       |
-|                  | Konfiguracja Entity Framework Core (kontekst bazy danych, migracje).   |
-| **Baza Danych**  | Utworzenie migracji i schematu bazy danych (SQL Server).              |
-| **Testy**        | Testy jednostkowe dla serwisów i repozytoriów.                         |
-|                  | Testy integracyjne dla API.                                            |
+| **API**          | Implementacja dodatkowych endpointów i rozszerzenie funkcjonalności.  |
+| **BLL**          | Rozszerzenie logiki biznesowej o dodatkowe funkcjonalności.            |
+| **DAL**          | Rozszerzenie repozytoriów o dodatkowe metody.                         |
+| **Testy**        | Dodanie testów dla nowych funkcjonalności.                            |
 | **UI**           | Implementacja frontendowa (Vue 3) – brak kodu w repozytorium.          |
 
 ---
