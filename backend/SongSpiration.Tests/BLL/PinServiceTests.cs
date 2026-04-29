@@ -83,6 +83,23 @@ namespace SongSpiration.Tests.BLL
 
             _pinRepositoryMock.Setup(repo => repo.GetByIdWithDetailsAsync(pinId)).ReturnsAsync(pin);
 
+            // Mockowanie istnienia pinu w repozytorium
+            var existingPin = new Pin
+            {
+                Id = pinId,
+                OwnerId = Guid.NewGuid(),
+                Title = "Original Title",
+                Description = "Original Description",
+                Visibility = PinVisibility.Public,
+                Instrument = Instrument.Guitar,
+                Filename = "default.gp",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _mockPinRepository.Setup(repo => repo.GetByIdWithDetailsAsync(pinId))
+                .ReturnsAsync(existingPin);
+
             // Act
             var result = await _pinService.UpdatePinAsync(pinId, updateDto);
 
