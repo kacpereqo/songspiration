@@ -1,7 +1,7 @@
 <script setup>
 import TopBar from './components/TopBar.vue';
 import Pin from './components/Pin.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const pins = ref([
   {
@@ -37,6 +37,13 @@ const pins = ref([
 const handleSearch = (query) => {
   console.log("Szukam:", query);
 };
+
+onMounted(()=>{
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  console.log("API URL:", apiUrl);
+})
+
 </script>
 
 <template>
