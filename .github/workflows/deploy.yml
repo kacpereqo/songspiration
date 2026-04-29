@@ -10,13 +10,24 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
-      # Kluczowa zmiana: Pakujemy tylko to, co niezbędne, 
-      # zachowując strukturę folderu 'backend' i plik Dockerfile w głównym katalogu
-      - name: Generate Deployment Package
-        run: |
-          zip -r deploy.zip Dockerfile backend/ -x "**/bin/*" "**/obj/*" "backend/SongSpiration.API/wwwroot/uploads/*"
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-      - name: Deploy to Elastic Beanstalk
+      # Budujemy aplikację bezpośrednio na GitHubie
+      - name: dotnet publish
+        run: dotnet publish backend/SongSpiration.API/SongSpiration.API.csproj -c Release -o publish -r linux-x64 --self-contained false
+
+      # Kopiujemy bazę danych do folderu publish, żeby była w paczce
+      - name: Copy DB
+        run: cp backend/SongSpiration.API/SongSpiration.db publish/
+
+      # Pakujemy TYLKO Dockerfile i gotowe pliki binarne
+      - name: Generate Deployment Package
+        run: zip -r deploy.zip Dockerfile publish/
+
+      - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v22
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
