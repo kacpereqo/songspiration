@@ -1,17 +1,28 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import TopBar from '@/components/TopBar.vue';
 import Pin from '@/components/Pin.vue';
 
 const pins = ref([]);
 const loading = ref(true);
 const apiUrl = import.meta.env.VITE_API_URL;
+const router = useRouter();
 
 // Funkcja pobierająca dane z backendu
 const fetchPins = async () => {
   try {
-    const response = await fetch(`${apiUrl}/api/Pins`);
+    const token = sessionStorage.getItem('token');
+    const response = await fetch(`${apiUrl}/api/Pins`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     
+    if (response.status === 401) {
+      router.push('/login');
+      return;
+    }
     if (!response.ok) throw new Error('Błąd połączenia z serwerem');
     
     const data = await response.json();

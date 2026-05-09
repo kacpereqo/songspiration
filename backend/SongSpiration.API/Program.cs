@@ -1,4 +1,5 @@
 using SongSpiration.BLL;
+using SongSpiration.BLL.DTOs;
 using SongSpiration.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,6 +41,9 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+// Configure EmailSettings
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 // 2. Baza Danych (SQLite)
 // 2. Baza Danych (SQLite)
