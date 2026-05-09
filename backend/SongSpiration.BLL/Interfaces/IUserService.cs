@@ -13,4 +13,7 @@ public interface IUserService
     
     // TA LINIA JEST KLUCZOWA:
     Task<bool> DeleteAccountAsync(Guid userId);
+    
+    Task ForgotPasswordAsync(ForgotPasswordDto dto);
+    Task ResetPasswordAsync(ResetPasswordDto dto);
 }

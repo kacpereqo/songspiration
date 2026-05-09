@@ -114,11 +114,15 @@ const handleSubmit = async () => {
   });
 
   try {
+    const token = sessionStorage.getItem('token');
     // apiUrl zawiera już "/api", więc doklejamy tylko "/Pins/upload"
     const response = await fetch(`${apiUrl}/api/Pins/upload`, {
       method: 'POST',
       body: formData,
       // WAŻNE: Nie ustawiamy nagłówka Content-Type! Przeglądarka zrobi to sama.
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     });
 
     if (response.ok) {

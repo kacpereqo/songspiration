@@ -93,5 +93,40 @@ namespace SongSpiration.API.Controllers
         return NoContent();
     }
 
+        // POST: api/users/forgot-password
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
+        {
+            try
+            {
+                await _userService.ForgotPasswordAsync(dto);
+                // Zawsze zwracamy Ok, aby zapobiec enumeracji użytkowników
+                return Ok(new { message = "Jeśli email istnieje w systemie, wysłaliśmy link do resetu hasła." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Wystąpił błąd podczas przetwarzania żądania." });
+            }
+        }
+
+        // POST: api/users/reset-password
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+        {
+            try
+            {
+                await _userService.ResetPasswordAsync(dto);
+                return Ok(new { message = "Hasło zostało pomyślnie zmienione." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Wystąpił błąd podczas resetowania hasła." });
+            }
+        }
+
     }
 }
