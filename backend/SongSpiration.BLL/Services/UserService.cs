@@ -1,7 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using SongSpiration.BLL.DTOs;
 using SongSpiration.BLL.Interfaces;
 using SongSpiration.DAL;
@@ -16,12 +22,14 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IEmailSender _emailSender;
     private readonly SongSpirationDbContext _dbContext;
+    private readonly IConfiguration _configuration;
 
-    public UserService(IUserRepository userRepository, IEmailSender emailSender, SongSpirationDbContext dbContext)
+    public UserService(IUserRepository userRepository, IEmailSender emailSender, SongSpirationDbContext dbContext, IConfiguration configuration)
     {
         _userRepository = userRepository;
         _emailSender = emailSender;
         _dbContext = dbContext;
+        _configuration = configuration;
     }
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterUserDto registerDto)
@@ -38,16 +46,19 @@ public class UserService : IUserService
             Id = Guid.NewGuid(),
             Email = registerDto.Email,
             DisplayName = registerDto.DisplayName,
-            PasswordHash = "hashed_" + registerDto.Password, // Simple placeholder hashing
-            CreatedAt = DateTime.UtcNow
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+            CreatedAt = DateTime.UtcNow,
+            Roles = "User"
         };
 
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
 
+        var token = GenerateJwtToken(user);
+
         return new AuthResponseDto
         {
-            AccessToken = "mock_access_token", // In real app, this would be a JWT token
+            AccessToken = token,
             RefreshToken = "mock_refresh_token",
             User = MapToDto(user)
         };
@@ -56,17 +67,20 @@ public class UserService : IUserService
     public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
     {
         var user = await _userRepository.GetByEmailAsync(loginDto.Email);
-        if (user == null)
+        if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
         {
             throw new UnauthorizedAccessException("Invalid email or password.");
         }
 
-        // In a real app, we would verify the password hash here
-        // For now, we'll just return a mock token
+        user.LastLogin = DateTime.UtcNow;
+        _userRepository.Update(user);
+        await _userRepository.SaveChangesAsync();
+
+        var token = GenerateJwtToken(user);
 
         return new AuthResponseDto
         {
-            AccessToken = "mock_access_token_" + user.Id, // Include user ID in token for demo
+            AccessToken = token,
             RefreshToken = "mock_refresh_token_" + user.Id,
             User = MapToDto(user)
         };
@@ -171,7 +185,7 @@ public class UserService : IUserService
         }
 
         // Update password
-        tokenRecord.User.PasswordHash = "hashed_" + dto.NewPassword; // Simple placeholder hashing
+        tokenRecord.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
 
         // Revoke token
         tokenRecord.IsRevoked = true;
@@ -179,6 +193,31 @@ public class UserService : IUserService
         _dbContext.Users.Update(tokenRecord.User);
         _dbContext.AuthTokens.Update(tokenRecord);
         await _dbContext.SaveChangesAsync();
+    }
+
+    private string GenerateJwtToken(User user)
+    {
+        var jwtSecret = _configuration["JwtSettings:Secret"] ?? "TWOJ_BARDZO_DLUGI_I_TAJNY_KLUCZ_MIN_32_ZNAKI";
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Role, user.Roles ?? "User")
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: null,
+            audience: null,
+            claims: claims,
+            expires: DateTime.UtcNow.AddDays(7),
+            signingCredentials: creds
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     private UserDto MapToDto(User user)

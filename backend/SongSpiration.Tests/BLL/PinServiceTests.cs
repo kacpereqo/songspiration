@@ -79,6 +79,7 @@ namespace SongSpiration.Tests.BLL
             // Arrange
             var pinId = Guid.NewGuid();
             var updateDto = new UpdatePinDto { Title = "Updated Title", Description = "Updated Description", Visibility = PinVisibility.Private };
+            _mockPinRepository.Setup(r => r.GetByIdWithDetailsAsync(pinId)).ReturnsAsync(new Pin { Id = pinId });
 
             // Act
             var result = await _pinService.UpdatePinAsync(pinId, updateDto);
