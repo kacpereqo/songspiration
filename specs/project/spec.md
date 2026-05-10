@@ -15,8 +15,10 @@
 ## 3. Architektura Systemu i Funkcjonalności
 
 ### 3.1. System Użytkowników i Autoryzacja
-* **Rejestracja i Logowanie:** Obsługa kont użytkowników (JWT Auth).
-* **Profil Użytkownika:** Możliwość zarządzania własnymi przesłanymi plikami i ustawieniami profilu.
+* **Rejestracja:** Zakładanie nowego konta z wykorzystaniem adresu e-mail, nazwy użytkownika oraz hasła.
+* **Logowanie:** Uwierzytelnianie przy pomocy e-maila i hasła. Sukces logowania nagradzany jest wygenerowaniem tokena JWT, który jest używany do autoryzacji w systemie.
+* **Autoryzacja (JWT):** Zabezpieczenie API chronionych ścieżek nagłówkiem `Authorization: Bearer <token>`. Wykorzystanie `sessionStorage` do po stronie frontendu.
+* **Role systemowe:** Podział użytkowników na zwykłych klientów oraz Administratorów, uwzględniając panel administracyjny (CRUD).
 
 ### 3.2. Zarządzanie Treścią (Pins & Tabs)
 * **Upload:** Formularz przesyłania plików `.gp` wraz z metadanymi - tytuł, gatunki muzyczne.
@@ -77,7 +79,28 @@ Strona profilu (`/profile/{id}` lub `/profile/me`) służy do prezentacji tożsa
 * **Zarządzanie Profilem:** * Formularz edycji umożliwia aktualizację pól `DisplayName`, `AvatarUrl` oraz `Bio`.
     * Proces aktualizacji danych jest obsługiwany przez metodę `UpdateProfileAsync`.
 * **Bezpieczeństwo i Usuwanie:** * Wyświetlanie przycisków edycji i usuwania jest uzależnione od uprawnień zalogowanego użytkownika (widoczne tylko dla właściciela).
-    * Możliwość trwałego usunięcia konta poprzez funkcję `DeleteAccountAsync`.
+    * Możliwość trwałego usunięcia konta poprzez `Usuń`
+### 6.3. Filtrowanie, wyszukiwanie i sortowanie
+
+- **Pasek filtrów (u góry feedu):**
+  - filtr instrumentu: Gitara / Bas / Perkusja
+  - filtr gatunków jako chips (multi-select)
+  - wyszukiwarka (tytuł/autor)
+  - sortowanie: popularne (na podstawie algorytmu/like) / najnowsze
+  - filtry można łączyć; wyniki są paginowane
+
+### 6.4. Autoryzacja i konto
+
+- **Logowanie (`LoginView`):** Formularz logowania e-mailem i hasłem. Po pomyślnym zalogowaniu, aplikacja zapisuje token `JWT` i nazwę użytkownika w `sessionStorage`, by w prawym górnym rogu strony wyświetlać inicjały użytkownika.
+- **Rejestracja (`RegisterView`):** Samodzielny widok zbierający wymagane dane użytkownika, posiadający walidację długości i struktury hasła, z możliwością przejścia do logowania po sukcesie.
+
+- **Profil użytkownika:**
+  - nagłówek profilu: awatar, `display_name`, krótki opis/bio (opcjonalne), statystyki (liczba dodanych pinów, suma polubień otrzymanych, liczba kolekcji)
+  - przycisk `edit profile` tylko dla właściciela profilu
+
+- **Zakładki (tabs) na profilu:**
+  - `Dodane piny` — grid jak w feedzie, z akcjami właściciela: `edit`, `delete` (opcjonalnie: `promote`)
+  - `Polubione` — grid pinów polubionych przez użytkownika; możliwość szybkiego `unlike` oraz `save` do kolekcji
 
 ### 6.5. Upload i edycja pina
 - Formularz przesyłania i edycji metadanych pina (tylko właściciel).

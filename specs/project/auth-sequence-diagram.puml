@@ -1,0 +1,34 @@
+@startuml
+title Diagram Sekwencji - Autentykacja (Logowanie, Rejestracja)
+actor Użytkownik as User
+participant "Frontend (Vue 3)" as UI
+participant "Kontroler (API)" as API
+participant "Serwis (BLL)" as Service
+database "Baza Danych" as DB
+
+== Rejestracja ==
+User -> UI: Wypełnia formularz rejestracji
+UI -> API: POST /api/Users/register (email, hasło, displayName)
+API -> Service: RegisterUserAsync()
+Service -> DB: Sprawdź dostępność e-maila
+DB --> Service: E-mail dostępny
+Service -> Service: Hashowanie hasła (np. BCrypt)
+Service -> DB: Zapisz nowego Użytkownika
+DB --> Service: Sukces (201 Created / 200 OK)
+Service --> API: Sukces
+API --> UI: HTTP 200 OK
+UI --> User: Komunikat o sukcesie, przekierowanie do logowania
+
+== Logowanie ==
+User -> UI: Wpisuje e-mail i hasło
+UI -> API: POST /api/Users/login (email, hasło)
+API -> Service: AuthenticateUserAsync()
+Service -> DB: Szukaj Użytkownika po e-mailu
+DB --> Service: Dane Użytkownika + Hash Hasła
+Service -> Service: Weryfikacja hasła
+Service -> Service: Generowanie tokenu JWT
+Service --> API: AuthResponseDto (Token JWT, User Info)
+API --> UI: HTTP 200 OK + Payload
+UI -> UI: Zapisz token w sessionStorage
+UI --> User: Przekierowanie na stronę główną (Feed)
+@enduml

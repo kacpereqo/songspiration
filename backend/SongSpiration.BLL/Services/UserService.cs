@@ -1,34 +1,42 @@
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using SongSpiration.BLL.DTOs;
 using SongSpiration.BLL.Interfaces;
 using SongSpiration.DAL;
 using SongSpiration.DAL.Interfaces;
 using SongSpiration.Models;
-using SongSpiration.BLL.DTOs;
 using SongSpiration.Models.Entities; 
 
 namespace SongSpiration.BLL.Services;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepo;
-    private readonly IPinRepository _pinRepo;
+    private readonly IUserRepository _userRepository;
+    private readonly IPinRepository _pinRepository;
     private readonly IEmailSender _emailSender;
     private readonly SongSpirationDbContext _dbContext;
+    private readonly IConfiguration _configuration;
 
-    public UserService(IUserRepository userRepo, IPinRepository pinRepo, IEmailSender emailSender, SongSpirationDbContext dbContext)
+    public UserService(IUserRepository userRepository, IPinRepository pinRepository, IEmailSender emailSender, SongSpirationDbContext dbContext, IConfiguration configuration)
     {
-        _userRepo = userRepo;
-        _pinRepo = pinRepo;
+        _userRepository = userRepository;
+        _pinRepository = pinRepository;
         _emailSender = emailSender;
         _dbContext = dbContext;
+        _configuration = configuration;
     }
 
     public async Task<UserProfileDto?> GetUserProfileAsync(Guid userId)
     {
-        var user = await _userRepo.GetByIdAsync(userId);
+        var user = await _userRepository.GetByIdAsync(userId);
         if (user == null) return null;
 
         return new UserProfileDto
@@ -37,36 +45,36 @@ public class UserService : IUserService
             DisplayName = user.DisplayName,
             AvatarUrl = user.AvatarUrl,
             Bio = user.Bio,
-            AddedPinsCount = await _pinRepo.GetCountByUserIdAsync(userId),
-            TotalLikesReceived = await _pinRepo.GetTotalLikesReceivedByUserIdAsync(userId)
+            AddedPinsCount = await _pinRepository.GetCountByUserIdAsync(userId),
+            TotalLikesReceived = await _pinRepository.GetTotalLikesReceivedByUserIdAsync(userId)
         };
     }
 
     public async Task<bool> UpdateProfileAsync(Guid userId, UpdateUserDto updateDto)
     {
-        var user = await _userRepo.GetByIdAsync(userId);
+        var user = await _userRepository.GetByIdAsync(userId);
         if (user == null) return false;
 
         user.DisplayName = updateDto.DisplayName;
         user.AvatarUrl = updateDto.AvatarUrl;
         user.Bio = updateDto.Bio;
 
-        _userRepo.Update(user);
-        return await _userRepo.SaveChangesAsync() > 0;
+        _userRepository.Update(user);
+        return await _userRepository.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteAccountAsync(Guid userId)
     {
-        var user = await _userRepo.GetByIdAsync(userId);
+        var user = await _userRepository.GetByIdAsync(userId);
         if (user == null) return false;
 
-        _userRepo.Delete(user);
-        return await _userRepo.SaveChangesAsync() > 0;
+        _userRepository.Delete(user);
+        return await _userRepository.SaveChangesAsync() > 0;
     }
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterUserDto registerDto)
     {
-        var existingUser = await _userRepo.GetByEmailAsync(registerDto.Email);
+        var existingUser = await _userRepository.GetByEmailAsync(registerDto.Email);
         if (existingUser != null) throw new InvalidOperationException("Użytkownik o tym adresie e-mail już istnieje.");
 
         var user = new User
@@ -74,34 +82,49 @@ public class UserService : IUserService
             Id = Guid.NewGuid(),
             Email = registerDto.Email,
             DisplayName = registerDto.DisplayName,
-            PasswordHash = "hashed_" + registerDto.Password,
-            CreatedAt = DateTime.UtcNow
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+            CreatedAt = DateTime.UtcNow,
+            Roles = "User"
         };
 
-        await _userRepo.AddAsync(user);
-        await _userRepo.SaveChangesAsync();
+        await _userRepository.AddAsync(user);
+        await _userRepository.SaveChangesAsync();
 
-        return new AuthResponseDto { AccessToken = "token_" + user.Id, User = MapToDto(user) };
+        var token = GenerateJwtToken(user);
+
+        return new AuthResponseDto
+        {
+            AccessToken = token,
+            RefreshToken = "mock_refresh_token",
+            User = MapToDto(user)
+        };
     }
 
     public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
     {
-        var user = await _userRepo.GetByEmailAsync(loginDto.Email);
-        if (user == null || user.PasswordHash != "hashed_" + loginDto.Password)
+        var user = await _userRepository.GetByEmailAsync(loginDto.Email);
+        if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
         {
             throw new UnauthorizedAccessException("Nieprawidłowy e-mail lub hasło.");
         }
 
+        user.LastLogin = DateTime.UtcNow;
+        _userRepository.Update(user);
+        await _userRepository.SaveChangesAsync();
+
+        var token = GenerateJwtToken(user);
+
         return new AuthResponseDto
         {
-            AccessToken = "token_" + user.Id,
+            AccessToken = token,
+            RefreshToken = "mock_refresh_token_" + user.Id,
             User = MapToDto(user)
         };
     }
 
     public async Task ForgotPasswordAsync(ForgotPasswordDto dto)
     {
-        var user = await _userRepo.GetByEmailAsync(dto.Email);
+        var user = await _userRepository.GetByEmailAsync(dto.Email);
         if (user == null) return;
 
         var resetToken = Guid.NewGuid().ToString("N");
@@ -141,12 +164,40 @@ public class UserService : IUserService
             throw new InvalidOperationException("Invalid or expired reset token.");
         }
 
-        tokenRecord.User.PasswordHash = "hashed_" + dto.NewPassword;
+        // Update password
+        tokenRecord.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+        // Revoke token
         tokenRecord.IsRevoked = true;
 
-        _userRepo.Update(tokenRecord.User);
+        _userRepository.Update(tokenRecord.User);
         _dbContext.AuthTokens.Update(tokenRecord);
         await _dbContext.SaveChangesAsync();
+    }
+
+    private string GenerateJwtToken(User user)
+    {
+        var jwtSecret = _configuration["JwtSettings:Secret"] ?? "TWOJ_BARDZO_DLUGI_I_TAJNY_KLUCZ_MIN_32_ZNAKI";
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Role, user.Roles ?? "User")
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: null,
+            audience: null,
+            claims: claims,
+            expires: DateTime.UtcNow.AddDays(7),
+            signingCredentials: creds
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     private UserDto MapToDto(User user)
