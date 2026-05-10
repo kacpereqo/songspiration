@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IPinService, PinService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IEmailSender, EmailSender>();
 
         // Add other services as needed
         // services.AddScoped<ICollectionService, CollectionService>();

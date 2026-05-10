@@ -1,4 +1,5 @@
 using SongSpiration.BLL;
+using SongSpiration.BLL.DTOs;
 using SongSpiration.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -41,6 +42,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Configure EmailSettings
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
 // 2. Baza Danych (SQLite)
 // 2. Baza Danych (SQLite)
 builder.Services.AddSongSpirationDal(options =>
@@ -60,13 +64,14 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    var jwtSecret = builder.Configuration.GetSection("JwtSettings:Secret").Value;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TWOJ_BARDZO_DLUGI_I_TAJNY_KLUCZ_MIN_32_ZNAKI"))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret ?? "TWOJ_BARDZO_DLUGI_I_TAJNY_KLUCZ_MIN_32_ZNAKI"))
     };
 });
 

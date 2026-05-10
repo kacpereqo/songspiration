@@ -1,0 +1,64 @@
+@startuml
+title Diagram Klas - Autentykacja i Zarządzanie Użytkownikami
+
+package "API Layer" {
+    class UserController {
+        - _userService: IUserService
+        + Register(dto: RegisterRequestDto): Task<IActionResult>
+        + Login(dto: LoginRequestDto): Task<IActionResult>
+    }
+}
+
+package "BLL Layer (Logika Biznesowa)" {
+    interface IUserService {
+        + RegisterUserAsync(dto: RegisterRequestDto): Task<bool>
+        + AuthenticateUserAsync(dto: LoginRequestDto): Task<AuthResponseDto>
+    }
+    
+    class UserService {
+        - _userRepository: IUserRepository
+        - _configuration: IConfiguration
+        - GenerateJwtToken(user: User): string
+        - HashPassword(password: string): string
+        - VerifyPassword(password: string, hash: string): bool
+    }
+}
+
+package "DAL Layer (Dostęp do danych)" {
+    interface IUserRepository {
+        + GetByEmailAsync(email: string): Task<User>
+        + AddUserAsync(user: User): Task
+        + UpdateUserAsync(user: User): Task
+        + SaveTokenAsync(token: AuthToken): Task
+    }
+}
+
+package "Models Layer" {
+    class User {
+        + Id: Guid
+        + Email: string
+        + PasswordHash: string
+        + DisplayName: string
+        + Roles: List<string>
+        + CreatedAt: DateTime
+        + IsEmailVerified: bool
+    }
+    
+    class AuthToken {
+        + Id: Guid
+        + UserId: Guid
+        + TokenHash: string
+        + Type: TokenType
+        + ExpiresAt: DateTime
+        + IsRevoked: bool
+    }
+}
+
+UserController --> IUserService
+IUserService <|.. UserService
+UserService --> IUserRepository
+IUserRepository --> User
+IUserRepository --> AuthToken
+User "1" *-- "0..*" AuthToken
+
+@enduml

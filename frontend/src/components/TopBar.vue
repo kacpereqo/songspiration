@@ -25,8 +25,11 @@
         <RouterLink to="/add-pin" class="btn-create">
           + Dodaj Pin
         </RouterLink>
-        <div class="user-profile">
-          <div class="avatar">JD</div>
+        <div class="user-profile" @click="toggleDropdown" style="position: relative;">
+          <div class="avatar">{{ userInitials }}</div>
+          <div v-if="isDropdownOpen" class="dropdown-menu">
+            <button @click.stop="logout" class="dropdown-item logout-btn">Wyloguj</button>
+          </div>
         </div>
       </div>
     </div>
@@ -34,14 +37,36 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const searchQuery = ref('');
+const isDropdownOpen = ref(false);
+const userInitials = ref('?');
 const emit = defineEmits(['search']);
 
 const handleSearch = () => {
   emit('search', searchQuery.value);
 };
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+const logout = () => {
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('userName');
+  router.push('/login');
+};
+
+onMounted(() => {
+  const userName = sessionStorage.getItem('userName');
+  if (userName) {
+    // Pobranie pierwszej litery nazwy lub e-maila
+    userInitials.value = userName.substring(0, 2).toUpperCase();
+  }
+});
 </script>
 
 <style scoped>
@@ -182,6 +207,40 @@ const handleSearch = () => {
   border: 2px solid #fff;
   box-shadow: 0 0 0 1px #e5e7eb;
   cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  min-width: 120px;
+  z-index: 1000;
+  padding: 8px 0;
+}
+
+.dropdown-item {
+  width: 100%;
+  text-align: left;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4b5563;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.logout-btn {
+  color: #e74c3c;
+  font-weight: 600;
 }
 
 /* Responsywność */
