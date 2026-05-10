@@ -78,17 +78,38 @@ namespace SongSpiration.Tests.BLL
         {
             // Arrange
             var pinId = Guid.NewGuid();
-            var updateDto = new UpdatePinDto { Title = "Updated Title", Description = "Updated Description", Visibility = PinVisibility.Private };
-
+            var existingPin = new Pin 
+            { 
+                Id = pinId, 
+                Title = "Original Title", 
+                OwnerId = Guid.NewGuid(),
+                PinGenres = new List<PinGenre>() // Inicjalizacja listy, żeby MapToDto nie wybuchło
+            };
+        
+            var updateDto = new UpdatePinDto 
+            { 
+                Title = "Updated Title", 
+                Description = "Updated Description", 
+                Visibility = PinVisibility.Private 
+            };
+        
+            // KLUCZOWE: Musimy powiedzieć Mockowi, żeby zwrócił istniejący pin
+            _mockPinRepository.Setup(s => s.GetByIdWithDetailsAsync(pinId))
+                .ReturnsAsync(existingPin);
+        
             // Act
             var result = await _pinService.UpdatePinAsync(pinId, updateDto);
-
+        
             // Assert
             Assert.NotNull(result);
             Assert.Equal(pinId, result.Id);
             Assert.Equal(updateDto.Title, result.Title);
             Assert.Equal(updateDto.Description, result.Description);
             Assert.Equal(updateDto.Visibility, result.Visibility);
+            
+            // Sprawdzenie czy repozytorium zostało zawołane
+            _mockPinRepository.Verify(s => s.Update(It.IsAny<Pin>()), Times.Once);
+            _mockPinRepository.Verify(s => s.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]

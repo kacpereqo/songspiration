@@ -13,9 +13,11 @@ public interface IPinRepository
     Task AddAsync(Pin pin);
     void Update(Pin pin);
     void Remove(Pin pin);
-    /// <summary>
-    /// Toggles like for given user and pin. Returns true if liked after operation, false if unliked.
-    /// </summary>
     Task<bool> ToggleLikeAsync(Guid userId, Guid pinId);
+    
+    // Te metody muszą być widoczne dla UserService
+    Task<int> GetCountByUserIdAsync(Guid userId);
+    Task<int> GetTotalLikesReceivedByUserIdAsync(Guid userId);
+    
     Task<int> SaveChangesAsync();
 }

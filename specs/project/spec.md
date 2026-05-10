@@ -1,4 +1,4 @@
-# Specyfikacja Projektu: MusicPin (Wersja Rozszerzona)
+# Specyfikacja Projektu: SongSpiration (Wersja Rozszerzona)
 
 ## 1. Cel Projektu
 **SongSpiration** to aplikacja webowa służąca do kolekcjonowania i przeglądania inspiracji muzycznych w formie wizualnych "pinów". Platforma dedykowana jest muzykom, umożliwiając im kategoryzację pomysłów, podgląd nut oraz współdzielenie plików tabulatur.
@@ -7,7 +7,7 @@
 
 ## 2. Stos Technologiczny
 * **Frontend:** Vue 3
-* **Backend:** C# / ASP.NET Core Web API (.NET 8)
+* **Backend:** C# / ASP.NET Core Web API (.NET 10/8)
 * **Baza danych:** SQL Server + Entity Framework Core
 
 ---
@@ -19,106 +19,68 @@
 * **Profil Użytkownika:** Możliwość zarządzania własnymi przesłanymi plikami i ustawieniami profilu.
 
 ### 3.2. Zarządzanie Treścią (Pins & Tabs)
-* **Upload:** Formularz przesyłania plików `.gp` wraz z metadanymi - tytuł, gatunki muzyczne
-* **Automatyzacja:** Instrument zostanie wybrany samemu na podstawie przesłanego pliku `.gp`
+* **Upload:** Formularz przesyłania plików `.gp` wraz z metadanymi - tytuł, gatunki muzyczne.
+* **Automatyzacja:** Instrument zostanie wybrany samemu na podstawie przesłanego pliku `.gp`.
 * **Podgląd wizualny:** Przechowywanie grafik reprezentujących zapis nutowy dla każdego pinu.
 
 ### 3.3. System Filtrowania i Wyszukiwania
 * **Filtrowanie po Instrumencie:** Szybki wybór kategorii: Gitara, Bas, Perkusja.
-* **Filtrowanie po Gatunku:** Możliwość kategoryzowania pinów według gatunków muzycznych (np. Rock, Metal, Jazz, Blues).
-* **Sortowanie** Sortowanie po popularności na podstawie własnego algorytmu, polubień lub według daty publikacji 
-
-### 3.4. Interaktywny Podgląd (Web Player)
-<!-- TODO 
-    LENIWE PRZETWARZANIE OBRAZU - 
--->
-
-* **Renderowanie Nut:** Integracja z biblioteką AlphaTab umożliwiającą wyświetlanie tabulatur bezpośrednio w przeglądarce
-* **Odtwarzanie:** Możliwość odsłuchania zapisu MIDI wygenerowanego z pliku `.gp`.
-
-### 3.5. Kolekcje i Social
-* **Polubienie:** Funkcja "Serduszko" pozwalająca na polubienie pina i dodanie go do zakładki "polubione"
+* **Filtrowanie po Gatunku:** Możliwość kategoryzowania pinów według gatunków muzycznych.
+* **Sortowanie:** Sortowanie po popularności, polubieniach lub według daty publikacji.
 
 ---
 
 ## 4. Zadania Warstwy Logiki Biznesowej
 * **Service Layer:** Implementacja serwisów `UserService`, `PinService` oraz `CollectionService`.
-* **Logika Filtrowania:** Budowanie dynamicznych zapytań do bazy danych na podstawie wybranych filtrów instrumentów i gatunków.
-* **Unit Testing:** * Testy logiki rejestracji
-    * Testy mechanizmu filtrowania 
-    * Testy integracyjne zapisu plików na serwerze.
+* **Unit Testing:** Testy rejestracji, mechanizmu filtrowania oraz zapisu plików.
+
 ---
 
-## 5. Model Danych
-
-### 5.1. Wysokopoziomowy opis tabel
-
-| Tabela | W skrócie — co zawiera |
+## 5. Model Danych (Wysokopoziomowy)
+| Tabela | Opis |
 |---|---|
-| `User` | Dane konta: email, hash hasła, profil użytkownika (display_name, avatar), role oraz metadane (created_at, last_login, is_email_verified). |
-| `AuthToken/Session` | Tokeny sesyjne i odświeżające: hash tokenu, typ (access/refresh), data wygaśnięcia, revokacja, odniesienie do użytkownika. |
-| `Pin` | Metadane pina: tytuł, opis, właściciel, lokalizacja lub blob pliku `.gp`, metadane pliku (filename, mime_type, size, checksum), widoczność, znaczniki czasowe. |
-| `Genre` | Lista gatunków muzycznych (nazwa, slug). |
-| `PinGenre` | Powiązania many-to-many między `Pin` a `Genre` (mapowanie pin↔gatunek). |
-| `Like` | Rejestracja polubień: kto polubił który pin oraz data; unikatowy klucz (`user_id`,`pin_id`). |
-
+| `User` | Dane konta, profil (display_name, avatar), role. |
+| `Pin` | Metadane pina, właściciel, lokalizacja pliku `.gp`. |
+| `Genre` | Lista gatunków muzycznych. |
+| `Like` | Relacja polubień użytkownik ↔ pin. |
 
 ---
 
 ## 6. Interfejs Użytkownika (UI)
+
 ### 6.1. Widoki publiczne i nawigacja
-
-- **Układ aplikacji:** górny pasek nawigacji z: logo (powrót do feedu), wyszukiwarka (tytuł/autor), skrót do `Upload`, skrót do profilu (po zalogowaniu) oraz przyciski `Zaloguj` / `Zarejestruj` (dla niezalogowanych).
-
-- **Strona główna / widok `pins` (feed):** responsywny grid z infinite scroll.
+- **Navbar:** Logo, wyszukiwarka, skróty do `Upload` i `Profilu`.
+- **Strona główna:** Responsywny grid pinów z infinite scroll.
 
 ### 6.2. Karta pina i szczegóły
+- **Karta:** Miniatura, tytuł, autor, akcje (`play`, `like`, `save`).
+- **Szczegóły:** Pełny podgląd AlphaTab, odtwarzacz MIDI, edycja (dla właściciela).
 
-- **Karta pina (w gridzie):**
-  - miniatura (wyrenderowany obraz tabulatury), `title`, autor (link do profilu), metadane (gatunki, instrument, czas utworzenia)
-  - akcje: `play/pause` (podgląd MIDI), `like` (licznik polubień), `save` (dodaj do kolekcji), `share`, `open details`
+### 6.3. Filtrowanie i wyszukiwanie
+- Pasek filtrów: instrumenty, gatunki (chips), wyszukiwarka tekstowa.
 
-- **Interakcje karty pina:**
-  - kliknięcie miniatury / `open details` otwiera modal / stronę szczegółów z: pełnym podglądem (AlphaTab), odtwarzaczem MIDI, pełnymi metadanymi, listą gatunków, akcjami `download` (jeśli dozwolone) oraz `edit`/`delete` (tylko właściciel)
-  - hover na karcie (desktop): szybkie kontrolki odtwarzania i ikona zapisu do kolekcji
+### 6.4. Widok Profilu i Zarządzanie Kontem
 
-- **Dostępność i stany:** skeleton loadery, komunikaty braku wyników, obsługa błędów odtwarzacza/podglądu (np. uszkodzony plik), informacja o pinach prywatnych (brak dostępu).
+Strona profilu (`/profile/{id}` lub `/profile/me`) służy do prezentacji tożsamości użytkownika, jego statystyk oraz zgromadzonych treści muzycznych.
 
-- **Uprawnienia:**
-  - `like` oraz `save` dostępne tylko dla zalogowanych; niezalogowani po kliknięciu widzą modal logowania
-  - `edit`/`delete` widoczne wyłącznie dla właściciela pina
+#### 6.4.1. Struktura Wizualna i Nawigacja
+* **Dostęp:** Wejście na profil następuje poprzez interakcję z elementami nawigacyjnymi (avatar/nazwa) w górnym pasku aplikacji.
+* **Sekcja nagłówka (Header):** * Prezentacja danych publicznych: zdjęcie profilowe (Avatar), nazwa wyświetlana (`DisplayName`) oraz opis biograficzny (`Bio`).
+    * Statystyki aktywności: łączna liczba dodanych pinów oraz suma otrzymanych polubień.
+    * Przycisk akcji **"Edytuj profil"**, dostępny dla właściciela konta.
+* **Przełącznik widoku (Tabs):** Interfejs umożliwiający zmianę wyświetlanej zawartości w obrębie tej samej strony:
+    * **Dodane:** Grid z pinami utworzonymi przez użytkownika.
+    * **Polubione:** Grid z pinami, które użytkownik oznaczył jako ulubione.
 
-### 6.3. Filtrowanie, wyszukiwanie i sortowanie
-
-- **Pasek filtrów (u góry feedu):**
-  - filtr instrumentu: Gitara / Bas / Perkusja
-  - filtr gatunków jako chips (multi-select)
-  - wyszukiwarka (tytuł/autor)
-  - sortowanie: popularne (na podstawie algorytmu/like) / najnowsze
-  - filtry można łączyć; wyniki są paginowane
-
-### 6.4. Autoryzacja i konto
-
-- **Rejestracja / Logowanie:** osobne widoki lub modal; walidacja formularzy, obsługa błędów (złe hasło, zajęty email), zapis tokenu JWT po sukcesie.
-
-- **Profil użytkownika:**
-  - nagłówek profilu: awatar, `display_name`, krótki opis/bio (opcjonalne), statystyki (liczba dodanych pinów, suma polubień otrzymanych, liczba kolekcji)
-  - przycisk `edit profile` tylko dla właściciela profilu
-
-- **Zakładki (tabs) na profilu:**
-  - `Dodane piny` — grid jak w feedzie, z akcjami właściciela: `edit`, `delete` (opcjonalnie: `promote`)
-  - `Polubione` — grid pinów polubionych przez użytkownika; możliwość szybkiego `unlike` oraz `save` do kolekcji
+#### 6.4.2. Funkcjonalność i Integracja z BLL
+* **Prezentacja Treści:** Widok wykorzystuje `GetPinsByUserIdAsync` do pobierania własnych publikacji oraz odpowiednie filtry dla treści polubionych.
+* **Zarządzanie Profilem:** * Formularz edycji umożliwia aktualizację pól `DisplayName`, `AvatarUrl` oraz `Bio`.
+    * Proces aktualizacji danych jest obsługiwany przez metodę `UpdateProfileAsync`.
+* **Bezpieczeństwo i Usuwanie:** * Wyświetlanie przycisków edycji i usuwania jest uzależnione od uprawnień zalogowanego użytkownika (widoczne tylko dla właściciela).
+    * Możliwość trwałego usunięcia konta poprzez funkcję `DeleteAccountAsync`.
 
 ### 6.5. Upload i edycja pina
-
-- **Widok `Upload`:** formularz przesłania pliku `.gp` oraz metadanych (tytuł, gatunki). Instrument jest wykrywany automatycznie z pliku.
-
-- **Widok `Edit Pin`:** edycja metadanych (np. tytuł, gatunki, widoczność); dostępny tylko dla właściciela.
+- Formularz przesyłania i edycji metadanych pina (tylko właściciel).
 
 ### 6.6. Kolekcje i social
-
-- **Kolekcje:** użytkownik może tworzyć i zarządzać kolekcjami oraz dodawać do nich piny (`save`). UI powinno umożliwiać wybór kolekcji z listy (dropdown/modal) oraz podstawowe operacje (utwórz/zmień nazwę/usuń kolekcję) zgodnie z `CollectionService`.
-
-- **Udostępnianie (`share`):** kopiowanie linku do pina, opcjonalnie systemowe udostępnianie (Web Share API) na mobile.
-
-- **Polubienia:** ikona „serduszko” przełącza stan polubienia; licznik polubień aktualizuje się po akcji.
+- Zarządzanie kolekcjami, udostępnianie linków, system polubień.
