@@ -2,7 +2,8 @@ namespace SongSpiration.BLL.DTOs;
 
 public class UpdateUserDto
 {
-    public string DisplayName { get; set; } = string.Empty;
-    public string? AvatarUrl { get; set; }
+    public required string DisplayName { get; set; }
+    public required string Email { get; set; }
     public string? Bio { get; set; }
+    public string? AvatarUrl { get; set; }
 }

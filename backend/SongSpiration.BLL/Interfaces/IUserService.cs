@@ -10,10 +10,8 @@ public interface IUserService
     Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
     Task<UserProfileDto?> GetUserProfileAsync(Guid userId);
     Task<bool> UpdateProfileAsync(Guid userId, UpdateUserDto updateDto);
-    
-    // TA LINIA JEST KLUCZOWA:
     Task<bool> DeleteAccountAsync(Guid userId);
-    
+    Task<bool> UpdateAvatarAsync(Guid userId, string avatarUrl);
     Task ForgotPasswordAsync(ForgotPasswordDto dto);
     Task ResetPasswordAsync(ResetPasswordDto dto);
 }

@@ -28,6 +28,8 @@
         <div class="user-profile" @click="toggleDropdown" style="position: relative;">
           <div class="avatar">{{ userInitials }}</div>
           <div v-if="isDropdownOpen" class="dropdown-menu">
+            <button @click="goToProfile" class="dropdown-item profile-link">Mój Profil</button>
+            <div class="dropdown-divider"></div>
             <button @click.stop="logout" class="dropdown-item logout-btn">Wyloguj</button>
           </div>
         </div>
@@ -57,16 +59,29 @@ const toggleDropdown = () => {
 const logout = () => {
   sessionStorage.removeItem('token');
   sessionStorage.removeItem('userName');
+  sessionStorage.removeItem('userId'); 
   router.push('/login');
+};
+
+const goToProfile = () => {
+  const userId = sessionStorage.getItem('userId');
+  console.log("Kliknięto profil. ID użytkownika w sesji:", userId);
+
+  if (userId) {
+    router.push({ name: 'profile', params: { id: userId } })
+      .catch(err => console.error("Błąd routera:", err));
+    isDropdownOpen.value = false;
+  } else {
+    alert("Błąd: Nie znaleziono ID użytkownika. Zaloguj się ponownie!");
+  }
 };
 
 onMounted(() => {
   const userName = sessionStorage.getItem('userName');
   if (userName) {
-    // Pobranie pierwszej litery nazwy lub e-maila
     userInitials.value = userName.substring(0, 2).toUpperCase();
   }
-});
+}); 
 </script>
 
 <style scoped>

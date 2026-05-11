@@ -44,21 +44,33 @@ public class UserService : IUserService
             Id = user.Id,
             DisplayName = user.DisplayName,
             AvatarUrl = user.AvatarUrl,
+            Email = user.Email,
             Bio = user.Bio,
             AddedPinsCount = await _pinRepository.GetCountByUserIdAsync(userId),
             TotalLikesReceived = await _pinRepository.GetTotalLikesReceivedByUserIdAsync(userId)
         };
     }
 
-    public async Task<bool> UpdateProfileAsync(Guid userId, UpdateUserDto updateDto)
+    public async Task<bool> UpdateProfileAsync(Guid id, UpdateUserDto updateDto)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+        if (user == null) return false;
+    
+        user.DisplayName = updateDto.DisplayName;
+        user.Email = updateDto.Email; 
+        user.Bio = updateDto.Bio;
+        user.AvatarUrl = updateDto.AvatarUrl;
+    
+        _userRepository.Update(user);
+        return await _userRepository.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> UpdateAvatarAsync(Guid userId, string avatarUrl)
     {
         var user = await _userRepository.GetByIdAsync(userId);
         if (user == null) return false;
 
-        user.DisplayName = updateDto.DisplayName;
-        user.AvatarUrl = updateDto.AvatarUrl;
-        user.Bio = updateDto.Bio;
-
+        user.AvatarUrl = avatarUrl;
         _userRepository.Update(user);
         return await _userRepository.SaveChangesAsync() > 0;
     }
@@ -134,7 +146,6 @@ public class UserService : IUserService
             Id = Guid.NewGuid(),
             UserId = user.Id,
             TokenHash = resetToken,
-            // Użycie pełnej ścieżki dla pewności kompilacji
             TokenType = TokenType.PasswordReset,
             ExpiryDate = DateTime.UtcNow.AddHours(1),
             IsRevoked = false
@@ -144,7 +155,7 @@ public class UserService : IUserService
         await _dbContext.SaveChangesAsync();
 
         var resetLink = $"http://localhost:5173/reset-password?token={resetToken}";
-        var message = $"<p><a href='{resetLink}'>Reset Password</a></p>";
+        var message = $"<p>Reset Password: <a href='{resetLink}'>Link</a></p>";
 
         if (_emailSender != null) await _emailSender.SendEmailAsync(user.Email, "SongSpiration - Password Reset", message);
     }
@@ -159,18 +170,15 @@ public class UserService : IUserService
                 !t.IsRevoked &&
                 t.ExpiryDate > DateTime.UtcNow);
 
-        if (tokenRecord == null || tokenRecord.User == null)
+        if (tokenRecord == null)
         {
             throw new InvalidOperationException("Invalid or expired reset token.");
         }
 
-        // Update password
         tokenRecord.User.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
-
-        // Revoke token
         tokenRecord.IsRevoked = true;
 
-        _userRepository.Update(tokenRecord.User);
+        _dbContext.Users.Update(tokenRecord.User);
         _dbContext.AuthTokens.Update(tokenRecord);
         await _dbContext.SaveChangesAsync();
     }
@@ -213,4 +221,4 @@ public class UserService : IUserService
             CreatedAt = user.CreatedAt
         };
     }
-}
+}   

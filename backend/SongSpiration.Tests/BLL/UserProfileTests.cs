@@ -75,17 +75,25 @@ public class UserProfileTests
     public async Task UpdateProfileAsync_UserExists_UpdatesDataAndReturnsTrue()
     {
         var userId = Guid.NewGuid();
-        var user = new User { Id = userId, DisplayName = "Old Name" };
-        var updateDto = new UpdateUserDto { DisplayName = "New Name", Bio = "New Bio" };
-
+        var user = new User { Id = userId, DisplayName = "Old Name", Bio = "Stary opis" };
+        
+        var updateDto = new UpdateUserDto 
+        { 
+            DisplayName = "Test User", 
+            Email = "test@example.com",
+            Bio = "Mój opis"
+        };
+    
         _userRepoMock.Setup(r => r.GetByIdAsync(userId)).ReturnsAsync(user);
         _userRepoMock.Setup(r => r.SaveChangesAsync()).ReturnsAsync(1);
-
+    
         var result = await _sut.UpdateProfileAsync(userId, updateDto);
-
+    
         Assert.True(result);
-        Assert.Equal("New Name", user.DisplayName);
-        Assert.Equal("New Bio", user.Bio);
+    
+        Assert.Equal("Test User", user.DisplayName); 
+        Assert.Equal("Mój opis", user.Bio);          
+        
         _userRepoMock.Verify(r => r.Update(user), Times.Once);
     }
 

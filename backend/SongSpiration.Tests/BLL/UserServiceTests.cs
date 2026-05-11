@@ -17,6 +17,7 @@ public class UserServiceTests
     private readonly Mock<IUserRepository> _mockUserRepository;
     private readonly Mock<IEmailSender> _mockEmailSender;
     private readonly Mock<IConfiguration> _mockConfiguration;
+    private readonly Mock<IPinRepository> _mockPinRepository;
     private readonly UserService _userService;
 
     public UserServiceTests()
@@ -24,6 +25,7 @@ public class UserServiceTests
         _mockUserRepository = new Mock<IUserRepository>();
         _mockEmailSender = new Mock<IEmailSender>();
         _mockConfiguration = new Mock<IConfiguration>();
+        _mockPinRepository = new Mock<IPinRepository>();
 
         // Setup mock configuration for JWT Secret
         _mockConfiguration.Setup(x => x["JwtSettings:Secret"])
@@ -32,6 +34,7 @@ public class UserServiceTests
         // Pass null for DbContext since Register/Login don't use it directly (they use repository)
         _userService = new UserService(
             _mockUserRepository.Object,
+            _mockPinRepository.Object,
             _mockEmailSender.Object,
             null!, // Assuming DbContext is not used in Register/Login
             _mockConfiguration.Object
@@ -54,7 +57,7 @@ public class UserServiceTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _userService.RegisterAsync(registerDto));
-        Assert.Equal("User with this email already exists.", exception.Message);
+        Assert.Equal("Użytkownik o tym adresie e-mail już istnieje.", exception.Message);
     }
 
     [Fact]
@@ -97,7 +100,7 @@ public class UserServiceTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _userService.LoginAsync(loginDto));
-        Assert.Equal("Invalid email or password.", exception.Message);
+        Assert.Equal("Nieprawidłowy e-mail lub hasło.", exception.Message);
     }
 
     [Fact]
@@ -122,7 +125,7 @@ public class UserServiceTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _userService.LoginAsync(loginDto));
-        Assert.Equal("Invalid email or password.", exception.Message);
+        Assert.Equal("Nieprawidłowy e-mail lub hasło.", exception.Message);
     }
 
     [Fact]

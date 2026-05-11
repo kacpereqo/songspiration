@@ -81,5 +81,14 @@ public class PinRepository : IPinRepository
     public async Task<int> GetTotalLikesReceivedByUserIdAsync(Guid userId)
         => await _db.Likes.CountAsync(l => l.Pin.OwnerId == userId);
 
+    public async Task<IEnumerable<Pin>> GetPinsByUserIdAsync(Guid userId) 
+    {
+        return await _db.Pins
+            .Where(p => p.OwnerId == userId) 
+            .Include(p => p.PinGenres)
+                .ThenInclude(pg => pg.Genre)
+            .ToListAsync();
+    }
+
     public Task<int> SaveChangesAsync() => _db.SaveChangesAsync();
 }

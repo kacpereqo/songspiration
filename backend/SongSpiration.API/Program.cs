@@ -4,19 +4,18 @@ using SongSpiration.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models; // <-- Kluczowy using dla Swaggera
+using Microsoft.OpenApi.Models; 
+using Microsoft.AspNetCore.StaticFiles;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Kontrolery i Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SongSpiration API", Version = "v1" });
 
-    // Definicja zabezpieczeń (Naprawia błędy CS0246, CS0103)
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -42,21 +41,15 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Configure EmailSettings
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
-// 2. Baza Danych (SQLite)
-// 2. Baza Danych (SQLite)
 builder.Services.AddSongSpirationDal(options =>
 {
-    // Pobiera string z appsettings.json, który wcześniej uzupełniliśmy
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-// 3. Logika biznesowa (Serwisy)
 builder.Services.AddSongSpirationBll();
 
-// 4. Autentykacja i Autoryzacja
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -77,19 +70,19 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// 5. CORS
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()   // Zezwala na każde źródło (wszystkie domeny i localhosty)
-              .AllowAnyHeader()   // Zezwala na wszystkie nagłówki
-              .AllowAnyMethod();  // Zezwala na wszystkie metody (GET, POST, PUT, DELETE, itp.)
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
+
 var app = builder.Build();
 
-// --- Middleware Pipeline ---g
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {
@@ -100,12 +93,24 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+var provider = new FileExtensionContentTypeProvider();
+provider.Mappings[".gp"] = "application/octet-stream";
+provider.Mappings[".gp3"] = "application/octet-stream";
+provider.Mappings[".gp4"] = "application/octet-stream";
+provider.Mappings[".gp5"] = "application/octet-stream";
+provider.Mappings[".gpx"] = "application/octet-stream";
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = provider,
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+    }
+});
+
 app.UseHttpsRedirection();
-
-// Serwowanie plików z wwwroot/uploads
-app.UseStaticFiles(); 
-
-app.UseCors();
+app.UseRouting();
 
 app.UseAuthentication(); 
 app.UseAuthorization();

@@ -14,10 +14,8 @@ public interface IPinRepository
     void Update(Pin pin);
     void Remove(Pin pin);
     Task<bool> ToggleLikeAsync(Guid userId, Guid pinId);
-    
-    // Te metody muszą być widoczne dla UserService
     Task<int> GetCountByUserIdAsync(Guid userId);
     Task<int> GetTotalLikesReceivedByUserIdAsync(Guid userId);
-    
+    Task<IEnumerable<Pin>> GetPinsByUserIdAsync(Guid userId);  
     Task<int> SaveChangesAsync();
 }
