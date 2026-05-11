@@ -107,3 +107,22 @@ Strona profilu (`/profile/{id}` lub `/profile/me`) służy do prezentacji tożsa
 
 ### 6.6. Kolekcje i social
 - Zarządzanie kolekcjami, udostępnianie linków, system polubień.
+
+- **Kolekcje:** użytkownik może tworzyć i zarządzać kolekcjami oraz dodawać do nich piny (`save`). UI powinno umożliwiać wybór kolekcji z listy (dropdown/modal) oraz podstawowe operacje (utwórz/zmień nazwę/usuń kolekcję) zgodnie z `CollectionService`.
+
+- **Udostępnianie (`share`):** kopiowanie linku do pina, opcjonalnie systemowe udostępnianie (Web Share API) na mobile.
+
+- **Polubienia:** ikona „serduszko” przełącza stan polubienia; licznik polubień aktualizuje się po akcji.
+
+---
+
+## 7. Architektura i Decyzje Projektowe (ADR)
+Wszelkie kluczowe decyzje technologiczne i architektoniczne podejmowane w projekcie są dokumentowane w formacie **ADR (Architecture Decision Records)**. Znajdują się one w katalogu `specs/adr/`.
+
+Obecnie zarejestrowane decyzje:
+* **[ADR-0001](../adr/0001-record-architecture-decisions.md):** Zapisywanie decyzji architektonicznych (ADR)
+* **[ADR-0002](../adr/0002-use-vue3-for-frontend.md):** Wybór Vue 3 na framework frontendowy
+* **[ADR-0003](../adr/0003-use-dotnet-8-web-api-for-backend.md):** Wybór C# i ASP.NET Core (.NET 8) do budowy API
+* **[ADR-0004](../adr/0004-use-ef-core-and-sql-server.md):** Użycie MS SQL Server oraz Entity Framework Core
+* **[ADR-0005](../adr/0005-use-jwt-for-stateless-auth.md):** Użycie JWT (JSON Web Tokens) do bezstanowej autoryzacji
+* **[ADR-0006](../adr/0006-use-alphatab-for-score-rendering.md):** Użycie biblioteki AlphaTab do renderowania tabulatur
