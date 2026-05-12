@@ -33,10 +33,10 @@ public class PinService : IPinService
             UpdatedAt = DateTime.UtcNow,
             PinGenres = new List<PinGenre>(),
             // Zapisujemy ścieżkę relatywną bezpośrednio z DTO
-            FilePath = createDto.TempFileLocation,
+            FilePath = createDto.TempFileLocation ?? string.Empty,
             Filename = !string.IsNullOrEmpty(createDto.TempFileLocation) 
-                ? Path.GetFileName(createDto.TempFileLocation) 
-                : null,
+                ? Path.GetFileName(createDto.TempFileLocation) ?? string.Empty
+                : string.Empty,
             MimeType = "application/octet-stream"
         };
 
@@ -45,18 +45,19 @@ public class PinService : IPinService
             await _pinRepository.AddAsync(pin);
             await _pinRepository.SaveChangesAsync();
 
-            if (createDto.GenreIds != null && createDto.GenreIds.Any())
-            {
-                foreach (var gId in createDto.GenreIds)
-                {
-                    pin.PinGenres.Add(new PinGenre 
-                    { 
-                        PinId = pin.Id, 
-                        GenreId = gId 
-                    });
-                }
-                await _pinRepository.SaveChangesAsync();
-            }
+if (createDto.GenreIds != null && createDto.GenreIds.Any())
+{
+    var validGenreIds = await _pinRepository.GetValidGenreIdsAsync(createDto.GenreIds);
+    foreach (var gId in validGenreIds)
+    {
+        pin.PinGenres.Add(new PinGenre 
+        { 
+            PinId = pin.Id, 
+            GenreId = gId 
+        });
+    }
+    await _pinRepository.SaveChangesAsync();
+}
 
             var pinWithDetails = await _pinRepository.GetByIdWithDetailsAsync(pin.Id);
             return MapToDto(pinWithDetails ?? pin);

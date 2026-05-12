@@ -149,7 +149,7 @@ namespace SongSpiration.API.Controllers
         }
 
         [HttpGet("user/{userId}/liked")]
-        public async Task<ActionResult<IEnumerable<PinDto>>> GetUserLikedPins(Guid userId)
+        public ActionResult<IEnumerable<PinDto>> GetUserLikedPins(Guid userId)
         {
             // TODO: Dla ciebie Kacperku ;3
             return Ok(new List<PinDto>()); 

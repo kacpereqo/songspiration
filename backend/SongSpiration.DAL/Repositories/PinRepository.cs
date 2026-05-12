@@ -16,17 +16,17 @@ public class PinRepository : IPinRepository
 
     public async Task AddAsync(Pin pin) => await _db.Pins.AddAsync(pin);
 
-    public void Remove(Pin pin)
-    {
-        var trackedEntity = _db.Pins.Local.FirstOrDefault(p => p.Id == pin.Id);
-        if (trackedEntity != null)
-        {
-            _db.Entry(trackedEntity).State = EntityState.Detached;
-        }
-        _db.Pins.Remove(pin);
-    }
+    public void Remove(Pin pin) => _db.Pins.Remove(pin);
 
     public void Update(Pin pin) => _db.Pins.Update(pin);
+
+    async Task<IEnumerable<Guid>> IPinRepository.GetValidGenreIdsAsync(IEnumerable<Guid> genreIds)
+    {
+        return await _db.Genres
+            .Where(g => genreIds.Contains(g.Id))
+            .Select(g => g.Id)
+            .ToListAsync();
+    }
 
     public async Task<Pin?> GetByIdAsync(Guid id)
     {
