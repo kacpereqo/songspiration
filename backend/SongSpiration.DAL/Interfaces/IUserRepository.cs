@@ -1,15 +1,14 @@
-using System;
+using SongSpiration.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using SongSpiration.Models.Entities;
 
-namespace SongSpiration.DAL.Interfaces;
-
-public interface IUserRepository
+namespace SongSpiration.DAL.Interfaces
 {
-    Task<User?> GetByIdAsync(Guid id);
-    Task<User?> GetByEmailAsync(string email);
-    Task AddAsync(User user);
-    void Update(User user);
-    void Delete(User user);
-    Task<int> SaveChangesAsync();
+    public interface IUserRepository
+    {
+        Task<List<User>> SearchUsersAsync(string criteria);
+        Task DeleteUserAsync(int id);
+        Task BanUserAsync(int id);
+        Task DeletePinsForUserAsync(int id);
+    }
 }

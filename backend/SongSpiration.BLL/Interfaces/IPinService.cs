@@ -1,18 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using SongSpiration.BLL.DTOs;
-
-namespace SongSpiration.BLL.Interfaces;
-
-public interface IPinService
+namespace SongSpiration.BLL.Interfaces
 {
-    Task<PinDto> CreatePinAsync(Guid ownerId, CreatePinDto createDto);
-    Task<PinDto?> GetPinByIdAsync(Guid pinId);
-    Task<PinDto> UpdatePinAsync(Guid pinId, UpdatePinDto updateDto);
-    Task<bool> DeletePinAsync(Guid pinId);
-    Task<IEnumerable<PinDto>> GetAllPinsAsync();
-    Task<IEnumerable<PinDto>> GetPinsByUserIdAsync(Guid userId);
-    Task<IEnumerable<PinDto>> GetPinsByBoardIdAsync(Guid boardId);
-    Task<(bool IsLiked, int LikeCount)> ToggleLikeAsync(Guid userId, Guid pinId);
+    public interface IPinService
+    {
+        Task<List<Pin>> GetAllPinsAsync();
+        Task<Pin> GetPinByIdAsync(int id);
+        Task<Pin> CreatePinAsync(PinCreateDto pinCreateDto);
+        Task<Pin> UpdatePinAsync(int id, PinCreateDto pinCreateDto);
+        Task DeletePinAsync(int id);
+    }
 }

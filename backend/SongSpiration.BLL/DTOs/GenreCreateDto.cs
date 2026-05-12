@@ -1,7 +1,7 @@
-namespace SongSpiration.BLL.DTOs;
-
-public class GenreCreateDto
+namespace SongSpiration.BLL.DTOs
 {
-    public string Name { get; set; } = string.Empty;
-    public string Slug { get; set; } = string.Empty;
+    public class GenreCreateDto
+    {
+        public string Name { get; set; }
+    }
 }
