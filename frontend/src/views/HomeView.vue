@@ -19,7 +19,7 @@ const filters = reactive({
 // Mapowanie instrumentów (dostosuj numery do swojego backendu)
 const instrumentMap = {
   0: 'Gitara',
-  1: 'Bass',
+  1: 'Bas',
   2: 'Perkusja'
 };
 
@@ -105,6 +105,16 @@ onMounted(() => {
       <!-- PANEL FILTROWANIA -->
       <div class="filter-panel">
         <div class="filter-group">
+          <label>Nazwa:</label>
+          <input 
+            v-model="filters.search" 
+            type="text" 
+            placeholder="Szukaj utworu..." 
+            class="filter-input"
+          />
+        </div>
+
+        <div class="filter-group">
           <label>Instrument:</label>
           <select v-model="filters.instrument">
             <option value="all">Wszystkie</option>
@@ -176,12 +186,16 @@ onMounted(() => {
   color: #444;
 }
 
-.filter-group select {
+.filter-group select, .filter-group input {
   padding: 8px 12px;
   border-radius: 6px;
   border: 1px solid #ddd;
   background-color: #fff;
   outline: none;
+}
+
+.filter-group input {
+  width: 200px;
 }
 
 .reset-btn {
