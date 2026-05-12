@@ -80,14 +80,27 @@ Strona profilu (`/profile/{id}` lub `/profile/me`) służy do prezentacji tożsa
     * Proces aktualizacji danych jest obsługiwany przez metodę `UpdateProfileAsync`.
 * **Bezpieczeństwo i Usuwanie:** * Wyświetlanie przycisków edycji i usuwania jest uzależnione od uprawnień zalogowanego użytkownika (widoczne tylko dla właściciela).
     * Możliwość trwałego usunięcia konta poprzez `Usuń`
-### 6.3. Filtrowanie, wyszukiwanie i sortowanie
+### 6.3. Szczegółowy opis strony głównej (Feed)
 
-- **Pasek filtrów (u góry feedu):**
-  - filtr instrumentu: Gitara / Bas / Perkusja
-  - filtr gatunków jako chips (multi-select)
-  - wyszukiwarka (tytuł/autor)
-  - sortowanie: popularne (na podstawie algorytmu/like) / najnowsze
-  - filtry można łączyć; wyniki są paginowane
+Główny widok aplikacji (`HomeView.vue`) odpowiada za prezentację publicznych pinów oraz zaawansowane filtrowanie treści muzycznych.
+
+#### 6.3.1. Mechanizm Filtrowania i Sortowania
+Filtrowanie odbywa się reaktywnie po stronie klienta na zestawie danych pobranych z API:
+*   **Wyszukiwanie tekstowe:** Filtrowanie po tytule utworu (niezależne od wielkości liter).
+*   **Filtr Instrumentu:** Wybór kategorii na podstawie mapowania: Gitara (0), Bas (1), Perkusja (2).
+*   **Filtr Gatunku:** Dynamicznie generowana lista unikalnych gatunków na podstawie tagów przypisanych do pobranych aktualnie pinów.
+*   **Kryteria Sortowania:**
+    *   `Najnowsze`: Sortowanie według daty utworzenia (`createdAt`).
+    *   `Alfabetycznie`: Sortowanie według tytułu utworu.
+    *   `Najwięcej polubień`: Sortowanie według liczby otrzymanych polubień (`likeCount`).
+*   **Kierunek Sortowania:** Możliwość zmiany pomiędzy porządkiem rosnącym (`asc`) a malejącym (`desc`).
+*   **Resetowanie:** Funkcja przywracania domyślnych ustawień wszystkich filtrów jednym kliknięciem.
+
+#### 6.3.2. Integracja z API i Obsługa Stanu
+*   **Autoryzacja:** Zapytania do endpointu `/api/Pins` wymagają poprawnego tokena JWT z `sessionStorage`. Wykrycie statusu 401 skutkuje natychmiastowym wylogowaniem i przekierowaniem do `LoginView`.
+*   **Przetwarzanie danych:** Dane z API są mapowane w locie (m.in. budowanie ścieżek do plików `.gp` oraz transformacja uproszczonych list gatunków na obiekty UI).
+*   **System Polubień:** Widok integruje się z `localStorage` w celu śledzenia stanu polubień (wykorzystując `visitorId` oraz listę `likedPins`), co pozwala na natychmiastową informację wizualną o interakcji użytkownika.
+*   **Tryb demonstracyjny:** W przypadku braku połączenia z serwerem lub niepoprawnej konfiguracji środowiska, aplikacja automatycznie ładuje dane typu *Mock* dla zachowania ciągłości prezentacji UI.
 
 ### 6.4. Autoryzacja i konto
 

@@ -1,0 +1,41 @@
+@startuml Frontend Components
+
+package "Views" {
+    class LoginView {
+        - form: Object
+        - errorMessage: string
+        + handleLogin()
+    }
+
+    class ProfileView {
+        - user: User
+        - pins: Pin[]
+        - showEditModal: boolean
+        - showAvatarModal: boolean
+        + fetchData()
+        + executeEdit()
+        + uploadAvatar()
+        + executeDelete()
+    }
+}
+
+package "Components" {
+    class ProfileHeader {
+        <<props>>
+        + user: User
+        <<events>>
+        + edit
+        + change-avatar
+    }
+
+    class PinGrid {
+        <<props>>
+        + pins: Pin[]
+        + stats: Object
+    }
+}
+
+ProfileView *-- ProfileHeader
+ProfileView *-- PinGrid
+
+@enduml
