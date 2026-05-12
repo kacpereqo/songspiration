@@ -6,17 +6,6 @@
         <h1 class="logo-text">Song<span>Spiration</span></h1>
       </div>
 
-      <div class="search-container">
-        <div class="search-input-wrapper">
-          <span class="search-icon">🔍</span>
-          <input 
-            type="text" 
-            placeholder="Szukaj riffów, gatunków, instrumentów..." 
-            v-model="searchQuery"
-            @input="handleSearch"
-          />
-        </div>
-      </div>
 
       <div class="nav-actions">
         <RouterLink to="/add-pin" class="btn-create">

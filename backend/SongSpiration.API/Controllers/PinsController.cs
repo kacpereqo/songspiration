@@ -45,7 +45,8 @@ namespace SongSpiration.API.Controllers
             [FromForm(Name = "genreIds")] List<Guid> genreIds,
             IFormFile file)
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                             ?? User.FindFirst("sub")?.Value;
             if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
             var ownerId = Guid.Parse(userIdClaim);
 
@@ -145,6 +146,33 @@ namespace SongSpiration.API.Controllers
             catch (Exception)
             {
                 return StatusCode(500, new { message = "Błąd podczas pobierania pinów użytkownika." });
+            }
+        }
+
+        [HttpPost("{id}/toggle-like")]
+        public async Task<IActionResult> ToggleLike(Guid id, [FromQuery] Guid? userId)
+        {
+            // Próbujemy pobrać ID z tokena, jeśli użytkownik jest zalogowany
+            var authUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                             ?? User.FindFirst("sub")?.Value;
+
+            Guid effectiveUserId;
+
+            if (!string.IsNullOrEmpty(authUserIdClaim))
+                effectiveUserId = Guid.Parse(authUserIdClaim);
+            else if (userId.HasValue)
+                effectiveUserId = userId.Value;
+            else
+                return BadRequest(new { error = "Brak identyfikatora użytkownika lub gościa." });
+
+            try
+            {
+                var result = await _pinService.ToggleLikeAsync(effectiveUserId, id);
+                return Ok(new { isLiked = result.IsLiked, likeCount = result.LikeCount });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Błąd podczas przełączania polubienia", message = ex.Message });
             }
         }
 

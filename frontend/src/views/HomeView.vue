@@ -13,7 +13,9 @@ const router = useRouter();
 const filters = reactive({
   search: '',
   instrument: 'all',
-  genre: 'all'
+  genre: 'all',
+  sortBy: 'newest',
+  sortOrder: 'desc'
 });
 
 // Mapowanie instrumentów (dostosuj numery do swojego backendu)
@@ -34,13 +36,30 @@ const availableGenres = computed(() => {
 
 // --- LOGIKA FILTROWANIA ---
 const filteredPins = computed(() => {
-  return pins.value.filter(pin => {
+  let result = pins.value.filter(pin => {
     const matchesSearch = pin.title.toLowerCase().includes(filters.search.toLowerCase());
     const matchesInstrument = filters.instrument === 'all' || pin.instrument.toString() === filters.instrument;
     const matchesGenre = filters.genre === 'all' || pin.pinGenres.some(pg => pg.genre.name === filters.genre);
     
     return matchesSearch && matchesInstrument && matchesGenre;
   });
+
+  // LOGIKA SORTOWANIA
+  if (filters.sortBy === 'alpha') {
+    result.sort((a, b) => filters.sortOrder === 'asc' 
+      ? a.title.localeCompare(b.title) 
+      : b.title.localeCompare(a.title));
+  } else if (filters.sortBy === 'likes') {
+    result.sort((a, b) => filters.sortOrder === 'desc'
+      ? (b.likeCount || 0) - (a.likeCount || 0)
+      : (a.likeCount || 0) - (b.likeCount || 0));
+  } else if (filters.sortBy === 'newest') {
+    result.sort((a, b) => filters.sortOrder === 'desc'
+      ? new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+      : new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+  }
+
+  return result;
 });
 
 const fetchPins = async () => {
@@ -57,10 +76,13 @@ const fetchPins = async () => {
     if (!response.ok) throw new Error('Błąd połączenia');
     
     const data = await response.json();
+    const likedPins = JSON.parse(localStorage.getItem('likedPins') || '[]');
+
     pins.value = data.map(pin => ({
       ...pin,
       filePath: `${apiUrl}/api/Pins/files/${pin.filename}`,
-      pinGenres: pin.genres.map(g => ({ genre: { name: g } }))
+      pinGenres: pin.genres.map(g => ({ genre: { name: g } })),
+      isLiked: likedPins.includes(pin.id)
     }));
 
   } catch (error) {
@@ -86,9 +108,24 @@ const resetFilters = () => {
   filters.instrument = 'all';
   filters.genre = 'all';
   filters.search = '';
+  filters.sortBy = 'newest';
+  filters.sortOrder = 'desc';
+};
+
+// Pobieranie lub generowanie unikalnego ID gościa dla polubień
+const getVisitorId = () => {
+  let id = localStorage.getItem('visitorId');
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem('visitorId', id);
+  }
+  return id;
 };
 
 onMounted(() => {
+  // Inicjalizacja visitorId
+  getVisitorId();
+
   if (apiUrl) fetchPins();
   else {
     loadMockData();
@@ -131,6 +168,23 @@ onMounted(() => {
             <option v-for="genre in availableGenres" :key="genre" :value="genre">
               {{ genre }}
             </option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Sortuj:</label>
+          <select v-model="filters.sortBy">
+            <option value="newest">Najnowsze</option>
+            <option value="alpha">Alfabetycznie (A-Z)</option>
+            <option value="likes">Najwięcej polubień</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Kierunek:</label>
+          <select v-model="filters.sortOrder">
+            <option value="desc">Malejąco</option>
+            <option value="asc">Rosnąco</option>
           </select>
         </div>
 

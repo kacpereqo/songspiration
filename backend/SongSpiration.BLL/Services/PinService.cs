@@ -119,6 +119,13 @@ if (createDto.GenreIds != null && createDto.GenreIds.Any())
         return await Task.FromResult(Enumerable.Empty<PinDto>());
     }
 
+    public async Task<(bool IsLiked, int LikeCount)> ToggleLikeAsync(Guid userId, Guid pinId)
+    {
+        bool isLiked = await _pinRepository.ToggleLikeAsync(userId, pinId);
+        var pin = await _pinRepository.GetByIdWithDetailsAsync(pinId);
+        return (isLiked, pin?.Likes?.Count ?? 0);
+    }
+
     private PinDto MapToDto(Pin pin)
     {
         return new PinDto
@@ -133,6 +140,7 @@ if (createDto.GenreIds != null && createDto.GenreIds.Any())
             FilePath = pin.FilePath,
             Size = pin.Size,
             CreatedAt = pin.CreatedAt,
+            LikeCount = pin.Likes?.Count ?? 0,
             Genres = pin.PinGenres?
                 .Where(pg => pg.Genre != null)
                 .Select(pg => pg.Genre!.Name)
