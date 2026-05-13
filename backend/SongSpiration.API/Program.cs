@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+        c.CustomSchemaIds(type => type.FullName);
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SongSpiration API", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
