@@ -1,6 +1,8 @@
 using SongSpiration.BLL.Interfaces;
 using SongSpiration.DAL.Interfaces;
-using SongSpiration.Models;
+using EntitiesUser = SongSpiration.Models.Entities.User;
+using ModelsGenre = SongSpiration.Models.Genre;
+using EntitiesGenre = SongSpiration.Models.Entities.Genre;
 using SongSpiration.BLL.DTOs;
 
 namespace SongSpiration.BLL.Services
@@ -18,33 +20,34 @@ namespace SongSpiration.BLL.Services
             _pinRepository = pinRepository;
         }
 
-        public async Task<User> GetUserByIdAsync(int userId)
+        public async Task<EntitiesUser> GetUserByIdAsync(Guid userId)
         {
             return await _userRepository.GetByIdAsync(userId);
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async Task<IEnumerable<EntitiesUser>> GetAllUsersAsync()
         {
-            return await _userRepository.GetAllAsync();
+            return await _userRepository.SearchUsersAsync("");
         }
 
-        public async Task<User> CreateUserAsync(UserCreateDto userCreateDto)
+        public async Task<EntitiesUser> CreateUserAsync(UserCreateDto userCreateDto)
         {
-            var user = new User
+            var user = new EntitiesUser
             {
-                Username = userCreateDto.Username,
                 Email = userCreateDto.Email,
                 PasswordHash = userCreateDto.PasswordHash,
-                Role = userCreateDto.Role
+                DisplayName = userCreateDto.Username,
+                Roles = userCreateDto.Role,
+                IsEmailVerified = true
             };
 
             await _userRepository.AddAsync(user);
-            await _userRepository.SaveAsync();
+            await _userRepository.SaveChangesAsync();
 
             return user;
         }
 
-        public async Task UpdateUserAsync(int userId, UserUpdateDto userUpdateDto)
+        public async Task UpdateUserAsync(Guid userId, UserUpdateDto userUpdateDto)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
@@ -52,16 +55,16 @@ namespace SongSpiration.BLL.Services
                 throw new Exception("User not found");
             }
 
-            user.Username = userUpdateDto.Username;
+            user.DisplayName = userUpdateDto.Username;
             user.Email = userUpdateDto.Email;
             user.PasswordHash = userUpdateDto.PasswordHash;
-            user.Role = userUpdateDto.Role;
+            user.Roles = userUpdateDto.Role;
 
             _userRepository.Update(user);
-            await _userRepository.SaveAsync();
+            await _userRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteUserAsync(int userId)
+        public async Task DeleteUserAsync(Guid userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
@@ -70,85 +73,79 @@ namespace SongSpiration.BLL.Services
             }
 
             _userRepository.Delete(user);
-            await _userRepository.SaveAsync();
+            await _userRepository.SaveChangesAsync();
         }
 
-        public async Task<List<Genre>> GetAllGenresAsync()
+        public async Task<List<ModelsGenre>> GetAllGenresAsync()
         {
-            return await _genreRepository.GetAllAsync();
-        }
-
-        public async Task<Genre> GetGenreByIdAsync(int genreId)
-        {
-            return await _genreRepository.GetByIdAsync(genreId);
-        }
-
-        public async Task<Genre> CreateGenreAsync(GenreCreateDto genreCreateDto)
-        {
-            var genre = new Genre
+            var entitiesGenres = await _genreRepository.GetAllAsync();
+            var genres = new List<ModelsGenre>();
+            foreach (var entityGenre in entitiesGenres)
             {
-                Name = genreCreateDto.Name
-            };
+            genres.Add(new ModelsGenre { Id = entityGenre.Id, Name = entityGenre.Name, Slug = entityGenre.Slug });
+            }
+            return genres;
+        }
 
+        public async Task<ModelsGenre> GetGenreByIdAsync(Guid genreId)
+        {
+            var entityGenre = await _genreRepository.GetByIdAsync(genreId);
+            if (entityGenre == null)
+            {
+                throw new Exception("Genre not found");
+            }
+            return new ModelsGenre { Id = entityGenre.Id, Name = entityGenre.Name, Slug = entityGenre.Slug };
+        }
+
+        public async Task<ModelsGenre> CreateGenreAsync(GenreCreateDto genreCreateDto)
+        {
+            var genre = new ModelsGenre { Name = genreCreateDto.Name, Slug = genreCreateDto.Slug };
             await _genreRepository.AddAsync(genre);
             await _genreRepository.SaveAsync();
 
             return genre;
         }
 
-        public async Task UpdateGenreAsync(int genreId, GenreCreateDto genreCreateDto)
+        public async Task UpdateGenreAsync(Guid genreId, GenreCreateDto genreCreateDto)
         {
-            var genre = await _genreRepository.GetByIdAsync(genreId);
-            if (genre == null)
+            var entityGenre = await _genreRepository.GetByIdAsync(genreId);
+            if (entityGenre == null)
             {
                 throw new Exception("Genre not found");
             }
 
-            genre.Name = genreCreateDto.Name;
+            entityGenre.Name = genreCreateDto.Name;
+            entityGenre.Slug = genreCreateDto.Slug;
 
-            _genreRepository.Update(genre);
+            _genreRepository.Update(entityGenre);
             await _genreRepository.SaveAsync();
         }
 
-        public async Task DeleteGenreAsync(int genreId)
+        public async Task DeleteGenreAsync(Guid genreId)
         {
-            var genre = await _genreRepository.GetByIdAsync(genreId);
-            if (genre == null)
+            var entityGenre = await _genreRepository.GetByIdAsync(genreId);
+            if (entityGenre == null)
             {
                 throw new Exception("Genre not found");
             }
 
-            _genreRepository.Delete(genre);
+            _genreRepository.Delete(entityGenre);
             await _genreRepository.SaveAsync();
         }
 
-        public async Task<List<User>> SearchUsersAsync(string searchTerm)
+        public async Task<List<EntitiesUser>> SearchUsersAsync(string searchTerm)
         {
-            return await _userRepository.SearchAsync(searchTerm);
+            return (List<EntitiesUser>)await _userRepository.SearchUsersAsync(searchTerm);
         }
 
-        public async Task BanUserAsync(int userId)
+        public async Task BanUserAsync(Guid userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-            {
-                throw new Exception("User not found");
-            }
-
-            user.IsBanned = true;
-
-            _userRepository.Update(user);
-            await _userRepository.SaveAsync();
+            await _userRepository.BanUserAsync(userId);
         }
 
-        public async Task DeletePinsForUserAsync(int userId)
+        public async Task DeletePinsForUserAsync(Guid userId)
         {
-            var pins = await _pinRepository.GetPinsByUserIdAsync(userId);
-            foreach (var pin in pins)
-            {
-                _pinRepository.Delete(pin);
-            }
-            await _pinRepository.SaveAsync();
+            await _userRepository.DeleteUserPinsAsync(userId);
         }
     }
 }

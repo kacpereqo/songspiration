@@ -1,22 +1,23 @@
 using SongSpiration.BLL.DTOs;
-using SongSpiration.Models;
+using EntitiesUser = SongSpiration.Models.Entities.User;
+using ModelsGenre = SongSpiration.Models.Genre;
 
 namespace SongSpiration.BLL.Interfaces
 {
     public interface IAdminPanelService
     {
-        Task<User> GetUserByIdAsync(int userId);
-        Task<IEnumerable<User>> GetAllUsersAsync();
-        Task<User> CreateUserAsync(UserCreateDto userCreateDto);
-        Task UpdateUserAsync(int userId, UserUpdateDto userUpdateDto);
-        Task DeleteUserAsync(int userId);
-        Task<List<Genre>> GetAllGenresAsync();
-        Task<Genre> GetGenreByIdAsync(int genreId);
-        Task<Genre> CreateGenreAsync(GenreCreateDto genreCreateDto);
-        Task UpdateGenreAsync(int genreId, GenreCreateDto genreCreateDto);
-        Task DeleteGenreAsync(int genreId);
-        Task<List<User>> SearchUsersAsync(string searchTerm);
-        Task BanUserAsync(int userId);
-        Task DeletePinsForUserAsync(int userId);
+        Task<EntitiesUser> GetUserByIdAsync(Guid userId);
+        Task<IEnumerable<EntitiesUser>> GetAllUsersAsync();
+        Task<EntitiesUser> CreateUserAsync(UserCreateDto userCreateDto);
+        Task UpdateUserAsync(Guid userId, UserUpdateDto userUpdateDto);
+        Task DeleteUserAsync(Guid userId);
+        Task<List<ModelsGenre>> GetAllGenresAsync();
+        Task<ModelsGenre> GetGenreByIdAsync(Guid genreId);
+        Task<ModelsGenre> CreateGenreAsync(GenreCreateDto genreCreateDto);
+        Task UpdateGenreAsync(Guid genreId, GenreCreateDto genreCreateDto);
+        Task DeleteGenreAsync(Guid genreId);
+        Task<List<EntitiesUser>> SearchUsersAsync(string searchTerm);
+        Task BanUserAsync(Guid userId);
+        Task DeletePinsForUserAsync(Guid userId);
     }
 }

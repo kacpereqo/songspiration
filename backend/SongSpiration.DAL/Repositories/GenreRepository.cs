@@ -1,5 +1,6 @@
 using SongSpiration.DAL.Interfaces;
-using SongSpiration.Models;
+using ModelsGenre = SongSpiration.Models.Genre;
+using EntitiesGenre = SongSpiration.Models.Entities.Genre;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,30 +16,30 @@ namespace SongSpiration.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Genre>> GetAllAsync()
+        public async Task<IEnumerable<EntitiesGenre>> GetAllAsync()
         {
-            return await _context.Set<Genre>().ToListAsync();
+            return await _context.Set<EntitiesGenre>().ToListAsync();
         }
 
-        public async Task<Genre> GetByIdAsync(int id)
+        public async Task<EntitiesGenre> GetByIdAsync(Guid id)
         {
-            return await _context.Set<Genre>().FindAsync(id);
+            return await _context.Set<EntitiesGenre>().FindAsync(id);
         }
 
-        public async Task AddAsync(Genre genre)
+        public async Task AddAsync(EntitiesGenre genre)
         {
-            await _context.Set<Genre>().AddAsync(genre);
+            await _context.Set<EntitiesGenre>().AddAsync(genre);
             await _context.SaveChangesAsync();
         }
 
-        public void Update(Genre genre)
+        public void Update(EntitiesGenre genre)
         {
-            _context.Set<Genre>().Update(genre);
+            _context.Set<EntitiesGenre>().Update(genre);
         }
 
-        public void Delete(Genre genre)
+        public void Delete(EntitiesGenre genre)
         {
-            _context.Set<Genre>().Remove(genre);
+            _context.Set<EntitiesGenre>().Remove(genre);
         }
 
         public async Task SaveAsync()

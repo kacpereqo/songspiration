@@ -1,0 +1,209 @@
+{
+  "$schema": "http://json.schemastore.org/sarif-1.0.0",
+  "version": "1.0.0",
+  "runs": [
+    {
+      "tool": {
+        "name": "Kompilator Microsoft (R) Visual C#",
+        "version": "5.6.0.0",
+        "fileVersion": "5.6.0-2.26230.102 (caa81fa4971f74880cdab61990cb1b11420939ec)",
+        "semanticVersion": "5.6.0",
+        "language": "pl-PL"
+      },
+      "results": [
+        {
+          "ruleId": "CS0246",
+          "level": "error",
+          "message": "Nie można znaleźć nazwy typu lub przestrzeni nazw „Moq” (brak dyrektywy using lub odwołania do zestawu?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///c:/Users/Aleksandra/songspiration-/backend/SongSpiration.BLL/Services/PinServiceTests.cs",
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 7,
+                  "endLine": 1,
+                  "endColumn": 10
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0234",
+          "level": "error",
+          "message": "Typ lub przestrzeń nazw „Dtos” nie występuje w przestrzeni nazw „SongSpiration.Models” (czy nie brakuje odwołania do zestawu?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///c:/Users/Aleksandra/songspiration-/backend/SongSpiration.BLL/Services/PinServiceTests.cs",
+                "region": {
+                  "startLine": 4,
+                  "startColumn": 28,
+                  "endLine": 4,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0246",
+          "level": "error",
+          "message": "Nie można znaleźć nazwy typu lub przestrzeni nazw „Xunit” (brak dyrektywy using lub odwołania do zestawu?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///c:/Users/Aleksandra/songspiration-/backend/SongSpiration.BLL/Services/PinServiceTests.cs",
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 7,
+                  "endLine": 5,
+                  "endColumn": 12
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0246",
+          "level": "error",
+          "message": "Nie można znaleźć nazwy typu lub przestrzeni nazw „Mock<>” (brak dyrektywy using lub odwołania do zestawu?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///c:/Users/Aleksandra/songspiration-/backend/SongSpiration.BLL/Services/PinServiceTests.cs",
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 26,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0246",
+          "level": "error",
+          "message": "Nie można znaleźć nazwy typu lub przestrzeni nazw „IPinRepository” (brak dyrektywy using lub odwołania do zestawu?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///c:/Users/Aleksandra/songspiration-/backend/SongSpiration.BLL/Services/PinServiceTests.cs",
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 31,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0246",
+          "level": "error",
+          "message": "Nie można znaleźć nazwy typu lub przestrzeni nazw „FactAttribute” (brak dyrektywy using lub odwołania do zestawu?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///c:/Users/Aleksandra/songspiration-/backend/SongSpiration.BLL/Services/PinServiceTests.cs",
+                "region": {
+                  "startLine": 23,
+                  "startColumn": 10,
+                  "endLine": 23,
+                  "endColumn": 14
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0246",
+          "level": "error",
+          "message": "Nie można znaleźć nazwy typu lub przestrzeni nazw „Fact” (brak dyrektywy using lub odwołania do zestawu?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///c:/Users/Aleksandra/songspiration-/backend/SongSpiration.BLL/Services/PinServiceTests.cs",
+                "region": {
+                  "startLine": 23,
+                  "startColumn": 10,
+                  "endLine": 23,
+                  "endColumn": 14
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0246",
+          "level": "error",
+          "message": "Nie można znaleźć nazwy typu lub przestrzeni nazw „FactAttribute” (brak dyrektywy using lub odwołania do zestawu?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///c:/Users/Aleksandra/songspiration-/backend/SongSpiration.BLL/Services/PinServiceTests.cs",
+                "region": {
+                  "startLine": 43,
+                  "startColumn": 10,
+                  "endLine": 43,
+                  "endColumn": 14
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS0246",
+          "level": "error",
+          "message": "Nie można znaleźć nazwy typu lub przestrzeni nazw „Fact” (brak dyrektywy using lub odwołania do zestawu?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///c:/Users/Aleksandra/songspiration-/backend/SongSpiration.BLL/Services/PinServiceTests.cs",
+                "region": {
+                  "startLine": 43,
+                  "startColumn": 10,
+                  "endLine": 43,
+                  "endColumn": 14
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "rules": {
+        "CS0234": {
+          "id": "CS0234",
+          "defaultLevel": "error",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS0234)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry",
+              "NotConfigurable"
+            ]
+          }
+        },
+        "CS0246": {
+          "id": "CS0246",
+          "defaultLevel": "error",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS0246)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry",
+              "NotConfigurable"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

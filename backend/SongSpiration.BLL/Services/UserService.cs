@@ -12,8 +12,8 @@ using SongSpiration.BLL.DTOs;
 using SongSpiration.BLL.Interfaces;
 using SongSpiration.DAL;
 using SongSpiration.DAL.Interfaces;
-using SongSpiration.Models;
-using SongSpiration.Models.Entities; 
+using EntitiesUser = SongSpiration.Models.Entities.User;
+using EnumsTokenType = SongSpiration.Models.TokenType;
 
 namespace SongSpiration.BLL.Services;
 
@@ -89,7 +89,7 @@ public class UserService : IUserService
         var existingUser = await _userRepository.GetByEmailAsync(registerDto.Email);
         if (existingUser != null) throw new InvalidOperationException("Użytkownik o tym adresie e-mail już istnieje.");
 
-        var user = new User
+        var user = new EntitiesUser
         {
             Id = Guid.NewGuid(),
             Email = registerDto.Email,
@@ -141,12 +141,12 @@ public class UserService : IUserService
 
         var resetToken = Guid.NewGuid().ToString("N");
 
-        var authToken = new AuthToken
+        var authToken = new SongSpiration.Models.Entities.AuthToken
         {
             Id = Guid.NewGuid(),
             UserId = user.Id,
             TokenHash = resetToken,
-            TokenType = TokenType.PasswordReset,
+            TokenType = EnumsTokenType.PasswordReset,
             ExpiryDate = DateTime.UtcNow.AddHours(1),
             IsRevoked = false
         };
@@ -164,9 +164,9 @@ public class UserService : IUserService
     {
         var tokenRecord = await _dbContext.AuthTokens
             .Include(t => t.User)
-            .FirstOrDefaultAsync(t => 
-                t.TokenHash == dto.Token && 
-                t.TokenType == TokenType.PasswordReset &&
+            .FirstOrDefaultAsync(t =>
+                t.TokenHash == dto.Token &&
+                t.TokenType == EnumsTokenType.PasswordReset &&
                 !t.IsRevoked &&
                 t.ExpiryDate > DateTime.UtcNow);
 
@@ -183,7 +183,7 @@ public class UserService : IUserService
         await _dbContext.SaveChangesAsync();
     }
 
-    private string GenerateJwtToken(User user)
+    private string GenerateJwtToken(EntitiesUser user)
     {
         var jwtSecret = _configuration["JwtSettings:Secret"] ?? "TWOJ_BARDZO_DLUGI_I_TAJNY_KLUCZ_MIN_32_ZNAKI";
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
@@ -208,7 +208,7 @@ public class UserService : IUserService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    private UserDto MapToDto(User user)
+    private UserDto MapToDto(EntitiesUser user)
     {
         return new UserDto
         {

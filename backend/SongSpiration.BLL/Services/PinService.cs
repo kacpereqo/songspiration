@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using SongSpiration.BLL.DTOs;
 using SongSpiration.BLL.Interfaces;
 using SongSpiration.DAL.Interfaces;
-using SongSpiration.Models;
-using SongSpiration.Models.Entities;
+using EntitiesPin = SongSpiration.Models.Entities.Pin;
+using EntitiesPinGenre = SongSpiration.Models.Entities.PinGenre;
 
 namespace SongSpiration.BLL.Services;
 
@@ -21,7 +21,7 @@ public class PinService : IPinService
 
     public async Task<PinDto> CreatePinAsync(Guid ownerId, CreatePinDto createDto)
     {
-        var pin = new Pin
+        var pin = new EntitiesPin
         {
             Id = Guid.NewGuid(),
             OwnerId = ownerId,
@@ -31,16 +31,16 @@ public class PinService : IPinService
             Instrument = createDto.Instrument,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
-            PinGenres = new List<PinGenre>(),
+            PinGenres = new List<EntitiesPinGenre>(),
             // Zapisujemy ścieżkę relatywną bezpośrednio z DTO
             FilePath = createDto.TempFileLocation ?? string.Empty,
-            Filename = !string.IsNullOrEmpty(createDto.TempFileLocation) 
+            Filename = !string.IsNullOrEmpty(createDto.TempFileLocation)
                 ? Path.GetFileName(createDto.TempFileLocation) ?? string.Empty
                 : string.Empty,
             MimeType = "application/octet-stream"
         };
 
-        try 
+        try
         {
             await _pinRepository.AddAsync(pin);
             await _pinRepository.SaveChangesAsync();
@@ -50,10 +50,10 @@ if (createDto.GenreIds != null && createDto.GenreIds.Any())
     var validGenreIds = await _pinRepository.GetValidGenreIdsAsync(createDto.GenreIds);
     foreach (var gId in validGenreIds)
     {
-        pin.PinGenres.Add(new PinGenre 
-        { 
-            PinId = pin.Id, 
-            GenreId = gId 
+        pin.PinGenres.Add(new EntitiesPinGenre
+        {
+            PinId = pin.Id,
+            GenreId = gId
         });
     }
     await _pinRepository.SaveChangesAsync();
@@ -64,7 +64,7 @@ if (createDto.GenreIds != null && createDto.GenreIds.Any())
         }
         catch (Exception)
         {
-            // W razie błędu bazy danych, kontroler zajmie się ewentualnym czyszczeniem plików, 
+            // W razie błędu bazy danych, kontroler zajmie się ewentualnym czyszczeniem plików,
             // jeśli przekażemy błąd dalej.
             throw;
         }
@@ -78,9 +78,9 @@ if (createDto.GenreIds != null && createDto.GenreIds.Any())
 
     public async Task<IEnumerable<PinDto>> GetPinsByUserIdAsync(Guid userId)
     {
-        var pins = await _pinRepository.GetPinsByUserIdAsync(userId); 
+        var pins = await _pinRepository.GetPinsByUserIdAsync(userId);
         return pins.Select(pin => MapToDto(pin)).ToList();
-    }   
+    }
 
     public async Task<IEnumerable<PinDto>> GetAllPinsAsync()
     {
@@ -126,7 +126,7 @@ if (createDto.GenreIds != null && createDto.GenreIds.Any())
         return (isLiked, pin?.Likes?.Count ?? 0);
     }
 
-    private PinDto MapToDto(Pin pin)
+    private PinDto MapToDto(EntitiesPin pin)
     {
         return new PinDto
         {

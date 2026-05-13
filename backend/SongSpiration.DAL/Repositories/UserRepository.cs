@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SongSpiration.DAL.Interfaces;
-using SongSpiration.Models;
+using SongSpiration.Models.Entities;
 
 namespace SongSpiration.DAL.Repositories;
 
@@ -14,15 +14,25 @@ public class UserRepository : IUserRepository
 
     public UserRepository(SongSpirationDbContext db) => _db = db;
 
-    public async Task AddAsync(User user) => await _db.Users.AddAsync(user);
+    public async Task AddAsync(User user)
+    {
+        await _db.Users.AddAsync(user);
+    }
 
     public async Task<User?> GetByEmailAsync(string email)
-        => await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
+    {
+        return await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
+    }
 
-    public async Task<User?> GetByIdAsync(int id)
-        => await _db.Users.FindAsync(id);
+    public async Task<User?> GetByIdAsync(Guid id)
+    {
+        return await _db.Users.FindAsync(id);
+    }
 
-    public void Update(User user) => _db.Users.Update(user);
+    public void Update(User user)
+    {
+        _db.Users.Update(user);
+    }
 
     public void Delete(User user)
     {
@@ -34,24 +44,24 @@ public class UserRepository : IUserRepository
     public async Task<IEnumerable<User>> SearchUsersAsync(string criteria)
     {
         return await _db.Users
-            .Where(u => u.Username.Contains(criteria) || u.Email.Contains(criteria))
+            .Where(u => u.DisplayName.Contains(criteria) || u.Email.Contains(criteria))
             .ToListAsync();
     }
 
-    public async Task BanUserAsync(int userId)
+    public async Task BanUserAsync(Guid userId)
     {
-        var user = await _db.Users.FindAsync(userId);
-        if (user != null)
+        var entityUser = await _db.Users.FindAsync(userId);
+        if (entityUser != null)
         {
-            user.IsBanned = true;
-            _db.Users.Update(user);
+            entityUser.Roles = "Banned";
+            _db.Users.Update(entityUser);
             await _db.SaveChangesAsync();
         }
     }
 
-    public async Task DeleteUserPinsAsync(int userId)
+    public async Task DeleteUserPinsAsync(Guid userId)
     {
-        var pins = _db.Pins.Where(p => p.UserId == userId);
+        var pins = _db.Pins.Where(p => p.OwnerId == userId);
         _db.Pins.RemoveRange(pins);
         await _db.SaveChangesAsync();
     }

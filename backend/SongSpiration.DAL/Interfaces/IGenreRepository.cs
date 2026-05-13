@@ -1,4 +1,5 @@
-using SongSpiration.Models;
+using ModelsGenre = SongSpiration.Models.Genre;
+using EntitiesGenre = SongSpiration.Models.Entities.Genre;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,11 +7,11 @@ namespace SongSpiration.DAL.Interfaces
 {
     public interface IGenreRepository
     {
-        Task<IEnumerable<Genre>> GetAllAsync();
-        Task<Genre> GetByIdAsync(int id);
-        Task AddAsync(Genre genre);
-        void Update(Genre genre);
-        void Delete(Genre genre);
+        Task<IEnumerable<EntitiesGenre>> GetAllAsync();
+        Task<EntitiesGenre> GetByIdAsync(Guid id);
+        Task AddAsync(EntitiesGenre genre);
+        void Update(EntitiesGenre genre);
+        void Delete(EntitiesGenre genre);
         Task SaveAsync();
     }
 }

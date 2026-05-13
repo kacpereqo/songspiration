@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SongSpiration.BLL.Services;
 using SongSpiration.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -25,7 +26,7 @@ namespace SongSpiration.API.Controllers
         }
 
         [HttpGet("genres/{id}")]
-        public async Task<ActionResult<Genre>> GetGenreByIdAsync(int id)
+        public async Task<ActionResult<Genre>> GetGenreByIdAsync(Guid id)
         {
             var genre = await _adminPanelService.GetGenreByIdAsync(id);
             if (genre == null)
@@ -43,18 +44,14 @@ namespace SongSpiration.API.Controllers
         }
 
         [HttpPut("genres/{id}")]
-        public async Task<ActionResult<Genre>> UpdateGenreAsync(int id, [FromBody] GenreCreateDto genreCreateDto)
+        public async Task<ActionResult<Genre>> UpdateGenreAsync(Guid id, [FromBody] GenreCreateDto genreCreateDto)
         {
-            var genre = await _adminPanelService.UpdateGenreAsync(id, genreCreateDto);
-            if (genre == null)
-            {
-                return NotFound();
-            }
-            return Ok(genre);
+            await _adminPanelService.UpdateGenreAsync(id, genreCreateDto);
+            return NoContent();
         }
 
         [HttpDelete("genres/{id}")]
-        public async Task<ActionResult> DeleteGenreAsync(int id)
+        public async Task<ActionResult> DeleteGenreAsync(Guid id)
         {
             await _adminPanelService.DeleteGenreAsync(id);
             return NoContent();
@@ -67,24 +64,24 @@ namespace SongSpiration.API.Controllers
             return Ok(users);
         }
 
-        [HttpDelete("users/{id}")]
-        public async Task<ActionResult> DeleteUserAsync(int id)
+        [HttpDelete("users/{userId}")]
+        public async Task<ActionResult> DeleteUserAsync(Guid userId)
         {
-            await _adminPanelService.DeleteUserAsync(id);
+            await _adminPanelService.DeleteUserAsync(userId);
             return NoContent();
         }
 
-        [HttpPut("users/{id}/ban")]
-        public async Task<ActionResult> BanUserAsync(int id)
+        [HttpPut("users/{userId}/ban")]
+        public async Task<ActionResult> BanUserAsync(Guid userId)
         {
-            await _adminPanelService.BanUserAsync(id);
+            await _adminPanelService.BanUserAsync(userId);
             return NoContent();
         }
 
-        [HttpDelete("users/{id}/pins")]
-        public async Task<ActionResult> DeletePinsForUserAsync(int id)
+        [HttpDelete("users/{userId}/pins")]
+        public async Task<ActionResult> DeletePinsForUserAsync(Guid userId)
         {
-            await _adminPanelService.DeletePinsForUserAsync(id);
+            await _adminPanelService.DeletePinsForUserAsync(userId);
             return NoContent();
         }
     }

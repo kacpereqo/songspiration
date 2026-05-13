@@ -14,16 +14,16 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in filteredUsers" :key="user.id">
-          <td>{{ user.id }}</td>
-          <td>{{ user.username }}</td>
-          <td>{{ user.email }}</td>
-          <td>
-            <button @click="deleteUser(user.id)">Delete</button>
-            <button @click="banUser(user.id)" v-if="!user.isBanned">Ban</button>
-            <button @click="deleteUserPins(user.id)">Delete Pins</button>
-          </td>
-        </tr>
+    <tr v-for="user in filteredUsers" :key="user.id">
+      <td>{{ user.id }}</td>
+      <td>{{ user.displayName }}</td>
+      <td>{{ user.email }}</td>
+      <td>
+        <button @click="deleteUser(user.id)">Delete</button>
+        <button @click="banUser(user.id)" v-if="!user.isBanned">Ban</button>
+        <button @click="deleteUserPins(user.id)">Delete Pins</button>
+      </td>
+    </tr>
       </tbody>
     </table>
   </div>
@@ -34,8 +34,8 @@ import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 
 interface User {
-  id: number;
-  username: string;
+  id: string;
+  displayName: string;
   email: string;
   isBanned: boolean;
 }
@@ -57,7 +57,7 @@ export default {
       }
     };
 
-    const deleteUser = async (id: number) => {
+    const deleteUser = async (id: string) => {
       try {
         await axios.delete(`/api/admin/users/${id}`);
         await fetchUsers();
@@ -66,7 +66,7 @@ export default {
       }
     };
 
-    const banUser = async (id: number) => {
+    const banUser = async (id: string) => {
       try {
         await axios.post(`/api/admin/users/${id}/ban`);
         await fetchUsers();
@@ -75,7 +75,7 @@ export default {
       }
     };
 
-    const deleteUserPins = async (id: number) => {
+    const deleteUserPins = async (id: string) => {
       try {
         await axios.delete(`/api/admin/users/${id}/pins`);
         alert('User pins deleted successfully');
@@ -86,7 +86,7 @@ export default {
 
     const filteredUsers = computed(() => {
       return users.value.filter(user =>
-        user.username.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+        user.displayName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.value.toLowerCase())
       );
     });
