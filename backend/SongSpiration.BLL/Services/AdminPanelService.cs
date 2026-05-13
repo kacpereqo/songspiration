@@ -99,11 +99,11 @@ namespace SongSpiration.BLL.Services
 
         public async Task<ModelsGenre> CreateGenreAsync(GenreCreateDto genreCreateDto)
         {
-            var genre = new ModelsGenre { Name = genreCreateDto.Name, Slug = genreCreateDto.Slug };
-            await _genreRepository.AddAsync(genre);
+            var entityGenre = new EntitiesGenre { Name = genreCreateDto.Name, Slug = genreCreateDto.Slug };
+            await _genreRepository.AddAsync(entityGenre);
             await _genreRepository.SaveAsync();
 
-            return genre;
+            return new ModelsGenre { Id = entityGenre.Id, Name = entityGenre.Name, Slug = entityGenre.Slug };
         }
 
         public async Task UpdateGenreAsync(Guid genreId, GenreCreateDto genreCreateDto)

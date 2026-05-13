@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SongSpiration.BLL.Services;
 using SongSpiration.Models;
+using SongSpiration.BLL.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
