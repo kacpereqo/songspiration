@@ -35,6 +35,7 @@ namespace SongSpiration.API.Controllers
             return Ok(pin);
         }
 
+        [Authorize]
         [HttpPost("upload")]
         public async Task<ActionResult<PinDto>> UploadPin(
             [FromForm] string title,
@@ -44,30 +45,15 @@ namespace SongSpiration.API.Controllers
             [FromForm(Name = "genreIds")] List<Guid> genreIds,
             IFormFile file)
         {
-            var ownerId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000");
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                             ?? User.FindFirst("sub")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized();
+            var ownerId = Guid.Parse(userIdClaim);
 
-            // 1. Przygotowanie DTO
-            var createPinDto = new CreatePinDto
-            {
-                Title = title,
-                Description = description,
-                Instrument = (Instrument)instrument,
-                Visibility = (PinVisibility)visibility,
-                GenreIds = genreIds?.ToList() ?? new List<Guid>()
-            };
+            if (file == null || file.Length == 0) return BadRequest("Plik jest wymagany.");
 
-            // 2. Walidacja pliku
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("Plik jest wymagany.");
-            }
-
-            // 3. Zapis pliku na dysku (to Ci działa)
             var uploadsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-            if (!Directory.Exists(uploadsDirectory))
-            {
-                Directory.CreateDirectory(uploadsDirectory);
-            }
+            if (!Directory.Exists(uploadsDirectory)) Directory.CreateDirectory(uploadsDirectory);
 
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
             var filePath = Path.Combine(uploadsDirectory, fileName);
@@ -77,33 +63,28 @@ namespace SongSpiration.API.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            createPinDto.TempFileLocation = filePath;
+            var relativePath = $"/uploads/{fileName}";
 
-            // 4. Próba zapisu do bazy z rozbudowaną diagnostyką
+            var createPinDto = new CreatePinDto
+            {
+                Title = title,
+                Description = description,
+                Instrument = (Instrument)instrument,
+                Visibility = (PinVisibility)visibility,
+                GenreIds = genreIds?.ToList() ?? new List<Guid>(),
+                TempFileLocation = relativePath 
+            };
+
             try 
             {
                 var createdPin = await _pinService.CreatePinAsync(ownerId, createPinDto);
-                createdPin.Filename = $"/uploads/{fileName}"; 
-                
                 return CreatedAtAction(nameof(GetPin), new { id = createdPin.Id }, createdPin);
             }
             catch (Exception ex)
             {
-                // Wyciągamy najgłębszy błąd (np. z SQLite)
-                var innerMessage = ex.InnerException?.Message ?? "Brak szczegółów (InnerException jest null)";
-                
-                // Logujemy do konsoli (sprawdź okno terminala!)
-                Console.WriteLine("========== BŁĄD ZAPISU DO BAZY ==========");
-                Console.WriteLine($"Główny błąd: {ex.Message}");
-                Console.WriteLine($"Szczegóły SQL: {innerMessage}");
-                Console.WriteLine("=========================================");
-
-                // Zwracamy detale do Swaggera
-                return StatusCode(500, new {
-                    error = "Błąd bazy danych",
-                    details = innerMessage,
-                    originalMessage = ex.Message
-                });
+                if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
+                var innerMessage = ex.InnerException?.Message ?? "Brak szczegółów";
+                return StatusCode(500, new { error = "Błąd bazy danych", details = innerMessage });
             }
         }
 
@@ -128,25 +109,17 @@ namespace SongSpiration.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePin(Guid id)
         {
-            // 1. Pobieramy dane o pinie, żeby znać ścieżkę do pliku
             var pin = await _pinService.GetPinByIdAsync(id);
             if (pin == null) return NotFound();
 
-            // 2. Próba usunięcia z bazy
             var success = await _pinService.DeletePinAsync(id);
             if (!success) return BadRequest("Nie udało się usunąć pina z bazy.");
 
-            // 3. Usuwanie fizycznego pliku z dysku
             if (!string.IsNullOrEmpty(pin.Filename))
             {
-                // Musimy wyłuskać samą nazwę pliku, jeśli Filename zawiera ścieżkę "/uploads/..."
                 var fileNameOnly = Path.GetFileName(pin.Filename);
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileNameOnly);
-
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
+                if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
             }
 
             return NoContent();
@@ -160,6 +133,54 @@ namespace SongSpiration.API.Controllers
 
             var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             return File(fileStream, "application/octet-stream", filename);
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<PinDto>>> GetUserPins(Guid userId)
+        {
+            try
+            {
+                var pins = await _pinService.GetPinsByUserIdAsync(userId);
+                return Ok(pins);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Błąd podczas pobierania pinów użytkownika." });
+            }
+        }
+
+        [HttpPost("{id}/toggle-like")]
+        public async Task<IActionResult> ToggleLike(Guid id, [FromQuery] Guid? userId)
+        {
+            // Próbujemy pobrać ID z tokena, jeśli użytkownik jest zalogowany
+            var authUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                             ?? User.FindFirst("sub")?.Value;
+
+            Guid effectiveUserId;
+
+            if (!string.IsNullOrEmpty(authUserIdClaim))
+                effectiveUserId = Guid.Parse(authUserIdClaim);
+            else if (userId.HasValue)
+                effectiveUserId = userId.Value;
+            else
+                return BadRequest(new { error = "Brak identyfikatora użytkownika lub gościa." });
+
+            try
+            {
+                var result = await _pinService.ToggleLikeAsync(effectiveUserId, id);
+                return Ok(new { isLiked = result.IsLiked, likeCount = result.LikeCount });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Błąd podczas przełączania polubienia", message = ex.Message });
+            }
+        }
+
+        [HttpGet("user/{userId}/liked")]
+        public ActionResult<IEnumerable<PinDto>> GetUserLikedPins(Guid userId)
+        {
+            // TODO: Dla ciebie Kacperku ;3
+            return Ok(new List<PinDto>()); 
         }
     }
 }

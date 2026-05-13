@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using SongSpiration.BLL.DTOs;
 using SongSpiration.BLL.Interfaces;
 
@@ -15,7 +16,6 @@ namespace SongSpiration.API.Controllers
             _userService = userService;
         }
 
-        // POST: api/users/register
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponseDto>> Register(RegisterUserDto registerDto)
         {
@@ -24,17 +24,10 @@ namespace SongSpiration.API.Controllers
                 var response = await _userService.RegisterAsync(registerDto);
                 return Ok(response);
             }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Wystąpił błąd podczas rejestracji." });
-            }
+            catch (InvalidOperationException ex) { return BadRequest(new { message = ex.Message }); }
+            catch { return StatusCode(500, new { message = "Błąd rejestracji." }); }
         }
 
-        // POST: api/users/login
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> Login(LoginDto loginDto)
         {
@@ -43,90 +36,78 @@ namespace SongSpiration.API.Controllers
                 var response = await _userService.LoginAsync(loginDto);
                 return Ok(response);
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Wystąpił błąd podczas logowania." });
-            }
+            catch (UnauthorizedAccessException ex) { return Unauthorized(new { message = ex.Message }); }
+            catch { return StatusCode(500, new { message = "Błąd logowania." }); }
         }
 
-        // GET: api/users/profile/{id}
-        [HttpGet("profile/{id}")]
-        public async Task<ActionResult<UserDto>> GetProfile(Guid id)
-        {
-            var profile = await _userService.GetProfileAsync(id);
-            if (profile == null)
-            {
-                return NotFound(new { message = "Użytkownik nie został znaleziony." });
-            }
-            return Ok(profile);
-        }
-
-        // PUT: api/users/profile/{id}
         [HttpPut("profile/{id}")]
-        public async Task<ActionResult<UserDto>> UpdateProfile(Guid id, UserDto updateDto)
+        public async Task<IActionResult> UpdateProfile(Guid id, UpdateUserDto updateDto)
         {
             try
             {
-                var updatedUser = await _userService.UpdateProfileAsync(id, updateDto);
-                return Ok(updatedUser);
+                var success = await _userService.UpdateProfileAsync(id, updateDto);
+                if (!success) return NotFound();
+                return Ok(new { message = "Profil zaktualizowany." });
             }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Błąd podczas aktualizacji profilu." });
-            }
+            catch { return StatusCode(500, new { message = "Błąd aktualizacji." }); }
         }
-        
-        [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAccount(Guid id)
-    {
-        // Tutaj był błąd - poprawione na użycie serwisu
-        var result = await _userService.DeleteAccountAsync(id);
-        if (!result) return NotFound();
-        return NoContent();
-    }
 
-        // POST: api/users/forgot-password
+        [HttpGet("profile/{id}")]
+        public async Task<ActionResult<UserProfileDto>> GetProfile(Guid id)
+        {
+            var profile = await _userService.GetUserProfileAsync(id);
+            if (profile == null) return NotFound(new { message = "Użytkownik nie znaleziony." });
+            return Ok(profile);
+        }
+    
+        [Authorize]
+        [HttpPost("profile/{id}/avatar")]
+        public async Task<IActionResult> UploadAvatar(Guid id, IFormFile avatar)
+        {
+            if (avatar == null || avatar.Length == 0) return BadRequest("Nie przesłano pliku.");
+            
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(avatar.FileName)}";
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatars");
+            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+            var filePath = Path.Combine(uploadsFolder, fileName);
+    
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await avatar.CopyToAsync(stream);
+            }
+    
+            var relativePath = $"/avatars/{fileName}";
+            var success = await _userService.UpdateAvatarAsync(id, relativePath);
+            if (!success) return NotFound();
+    
+            return Ok(new { url = relativePath });
+        }
+            
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAccount(Guid id)
+        {
+            var result = await _userService.DeleteAccountAsync(id);
+            if (!result) return NotFound();
+            return NoContent();
+        }
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
         {
-            try
-            {
-                await _userService.ForgotPasswordAsync(dto);
-                // Zawsze zwracamy Ok, aby zapobiec enumeracji użytkowników
-                return Ok(new { message = "Jeśli email istnieje w systemie, wysłaliśmy link do resetu hasła." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Wystąpił błąd podczas przetwarzania żądania." });
-            }
+            await _userService.ForgotPasswordAsync(dto);
+            return Ok(new { message = "Jeśli email istnieje, link został wysłany." });
         }
 
-        // POST: api/users/reset-password
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
         {
             try
             {
                 await _userService.ResetPasswordAsync(dto);
-                return Ok(new { message = "Hasło zostało pomyślnie zmienione." });
+                return Ok(new { message = "Hasło zostało zmienione." });
             }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Wystąpił błąd podczas resetowania hasła." });
-            }
+            catch (InvalidOperationException ex) { return BadRequest(new { message = ex.Message }); }
+            catch { return StatusCode(500, new { message = "Błąd resetowania hasła." }); }
         }
-
     }
 }

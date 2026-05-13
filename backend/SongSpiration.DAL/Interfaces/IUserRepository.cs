@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SongSpiration.Models.Entities;
 
@@ -12,4 +13,7 @@ public interface IUserRepository
     void Update(User user);
     void Delete(User user);
     Task<int> SaveChangesAsync();
+    Task<IEnumerable<User>> SearchUsersAsync(string criteria);
+    Task BanUserAsync(Guid userId);
+    Task DeleteUserPinsAsync(Guid userId);
 }

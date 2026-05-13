@@ -16,30 +16,25 @@ public class PinRepository : IPinRepository
 
     public async Task AddAsync(Pin pin) => await _db.Pins.AddAsync(pin);
 
-   public void Remove(Pin pin)
-{
-    // Sprawdzamy, czy w lokalnej pamięci (ChangeTracker) jest już Pin o tym samym ID
-    var trackedEntity = _db.Pins.Local.FirstOrDefault(p => p.Id == pin.Id);
-
-    if (trackedEntity != null)
-    {
-        // Jeśli tak, odpinamy tamten obiekt, by uniknąć konfliktu, lub usuwamy bezpośrednio ten śledzony
-        _db.Entry(trackedEntity).State = EntityState.Detached;
-    }
-    
-    // Teraz możemy bezpiecznie oznaczyć obiekt do usunięcia
-    _db.Pins.Remove(pin);
-}
+    public void Remove(Pin pin) => _db.Pins.Remove(pin);
 
     public void Update(Pin pin) => _db.Pins.Update(pin);
 
-   public async Task<Pin?> GetByIdAsync(Guid id)
+    async Task<IEnumerable<Guid>> IPinRepository.GetValidGenreIdsAsync(IEnumerable<Guid> genreIds)
     {
-        // Dodanie .AsNoTracking() rozwiązuje konflikt śledzenia
+        return await _db.Genres
+            .Where(g => genreIds.Contains(g.Id))
+            .Select(g => g.Id)
+            .ToListAsync();
+    }
+
+    public async Task<Pin?> GetByIdAsync(Guid id)
+    {
         return await _db.Pins
             .AsNoTracking() 
             .FirstOrDefaultAsync(p => p.Id == id);
     }
+
     public async Task<Pin?> GetByIdWithDetailsAsync(Guid id)
         => await _db.Pins
             .Include(p => p.Owner)
@@ -78,6 +73,21 @@ public class PinRepository : IPinRepository
             await _db.SaveChangesAsync();
             return false;
         }
+    }
+
+    public async Task<int> GetCountByUserIdAsync(Guid userId) 
+        => await _db.Pins.CountAsync(p => p.OwnerId == userId);
+
+    public async Task<int> GetTotalLikesReceivedByUserIdAsync(Guid userId)
+        => await _db.Likes.CountAsync(l => l.Pin.OwnerId == userId);
+
+    public async Task<IEnumerable<Pin>> GetPinsByUserIdAsync(Guid userId) 
+    {
+        return await _db.Pins
+            .Where(p => p.OwnerId == userId) 
+            .Include(p => p.PinGenres)
+                .ThenInclude(pg => pg.Genre)
+            .ToListAsync();
     }
 
     public Task<int> SaveChangesAsync() => _db.SaveChangesAsync();

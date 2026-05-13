@@ -46,7 +46,13 @@
         <!-- Gatunki -->
         <div class="form-group">
           <label>Gatunki</label>
-          <div class="genre-selection">
+          <div v-if="isLoadingGenres" class="loading-state">
+            Ładowanie gatunków...
+          </div>
+          <div v-else-if="genresError" class="error-state">
+            Błąd podczas ładowania gatunków: {{ genresError }}
+          </div>
+          <div v-else class="genre-selection">
             <label v-for="genre in availableGenres" :key="genre.id" class="checkbox-label">
               <input type="checkbox" :value="genre.id" v-model="form.genreIds">
               {{ genre.name }}
@@ -66,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -74,14 +80,36 @@ const apiUrl = import.meta.env.VITE_API_URL; // To jest: http://localhost:5035/a
 
 const isSubmitting = ref(false);
 const selectedFile = ref(null);
+const availableGenres = ref([]);
+const isLoadingGenres = ref(true);
+const genresError = ref(null);
 
-// Przykładowe gatunki (Wymienione na ID typu GUID, ponieważ tego oczekuje baza danych w C#)
-const availableGenres = [
-  { id: '3fa85f64-5717-4562-b3fc-2c963f66afa6', name: 'Rock' },
-  { id: '11111111-2222-3333-4444-555555555555', name: 'Metal' },
-  { id: '22222222-3333-4444-5555-666666666666', name: 'Jazz' },
-  { id: '33333333-4444-5555-6666-777777777777', name: 'Blues' }
-];
+const fetchGenres = async () => {
+  try {
+    isLoadingGenres.value = true;
+    genresError.value = null;
+    const response = await fetch(`${apiUrl}/api/Genre`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch genres: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    availableGenres.value = data.map(genre => ({
+      id: genre.id,
+      name: genre.name
+    }));
+  } catch (error) {
+    console.error("Error fetching genres:", error);
+    genresError.value = error.message;
+  } finally {
+    isLoadingGenres.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchGenres();
+});
 
 const form = ref({
   title: '',
@@ -154,6 +182,25 @@ label { font-weight: 600; color: #444; font-size: 14px; }
 input[type="text"], textarea, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
 .genre-selection { display: flex; flex-wrap: wrap; gap: 10px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
 .checkbox-label { display: flex; align-items: center; gap: 5px; font-size: 14px; background: white; padding: 5px 10px; border: 1px solid #eee; border-radius: 20px; cursor: pointer; }
+
+.loading-state, .error-state {
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.loading-state {
+  background-color: #f0f8ff;
+  color: #2c3e50;
+}
+
+.error-state {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+
 .form-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
 .btn-submit { background: #2ecc71; color: white; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 .btn-submit:disabled { background: #95a5a6; }

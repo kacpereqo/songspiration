@@ -1,33 +1,25 @@
 <template>
   <nav class="top-bar">
     <div class="top-bar-content">
-      <!-- LEWA STRONA: LOGO -->
-      <div class="brand">
+      <div class="brand" @click="$router.push('/')">
         <span class="logo-icon">🎸</span>
         <h1 class="logo-text">Song<span>Spiration</span></h1>
       </div>
 
-      <!-- ŚRODEK: WYSZUKIWARKA -->
-      <div class="search-container">
-        <div class="search-input-wrapper">
-          <span class="search-icon">🔍</span>
-          <input 
-            type="text" 
-            placeholder="Szukaj riffów, gatunków, instrumentów..." 
-            v-model="searchQuery"
-            @input="handleSearch"
-          />
-        </div>
-      </div>
 
-      <!-- PRAWA STRONA: NAWIGACJA -->
       <div class="nav-actions">
         <RouterLink to="/add-pin" class="btn-create">
           + Dodaj Pin
         </RouterLink>
         <div class="user-profile" @click="toggleDropdown" style="position: relative;">
-          <div class="avatar">{{ userInitials }}</div>
+          <div class="avatar">
+            <img v-if="avatarUrl" :src="`${apiUrl}${avatarUrl}`" alt="Avatar" class="avatar-img" />
+            <span v-else>{{ userInitials }}</span>
+          </div>
+          
           <div v-if="isDropdownOpen" class="dropdown-menu">
+            <button @click="goToProfile" class="dropdown-item profile-link">Mój Profil</button>
+            <div class="dropdown-divider"></div>
             <button @click.stop="logout" class="dropdown-item logout-btn">Wyloguj</button>
           </div>
         </div>
@@ -41,9 +33,11 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const apiUrl = import.meta.env.VITE_API_URL;
 const searchQuery = ref('');
 const isDropdownOpen = ref(false);
 const userInitials = ref('?');
+const avatarUrl = ref(null);
 const emit = defineEmits(['search']);
 
 const handleSearch = () => {
@@ -55,18 +49,43 @@ const toggleDropdown = () => {
 };
 
 const logout = () => {
-  sessionStorage.removeItem('token');
-  sessionStorage.removeItem('userName');
+  sessionStorage.clear();
   router.push('/login');
 };
 
-onMounted(() => {
+const goToProfile = () => {
+  const userId = sessionStorage.getItem('userId');
+  if (userId) {
+    router.push({ name: 'profile', params: { id: userId } });
+    isDropdownOpen.value = false;
+  }
+};
+
+const fetchUserData = async () => {
+  const userId = sessionStorage.getItem('userId');
+  const token = sessionStorage.getItem('token');
   const userName = sessionStorage.getItem('userName');
+
   if (userName) {
-    // Pobranie pierwszej litery nazwy lub e-maila
     userInitials.value = userName.substring(0, 2).toUpperCase();
   }
-});
+
+  if (userId && token) {
+    try {
+      const res = await fetch(`${apiUrl}/api/Users/profile/${userId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        avatarUrl.value = data.avatarUrl || data.AvatarUrl;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+};
+
+onMounted(fetchUserData);
 </script>
 
 <style scoped>
@@ -93,7 +112,6 @@ onMounted(() => {
   gap: 20px;
 }
 
-/* BRAND / LOGO */
 .brand {
   display: flex;
   align-items: center;
@@ -114,10 +132,9 @@ onMounted(() => {
 }
 
 .logo-text span {
-  color: #2ecc71; /* Kolor zielony z Twojego przycisku */
+  color: #2ecc71;
 }
 
-/* WYSZUKIWARKA */
 .search-container {
   flex: 1;
   max-width: 600px;
@@ -153,27 +170,10 @@ onMounted(() => {
   box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
 }
 
-/* AKCJE */
 .nav-actions {
   display: flex;
   align-items: center;
   gap: 15px;
-}
-
-.btn-nav {
-  background: none;
-  border: none;
-  color: #4b5563;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-
-.btn-nav:hover {
-  background: #f3f4f6;
 }
 
 .btn-create {
@@ -185,6 +185,7 @@ onMounted(() => {
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
+  text-decoration: none;
   transition: transform 0.2s;
 }
 
@@ -196,17 +197,24 @@ onMounted(() => {
 .avatar {
   width: 38px;
   height: 38px;
-  background: #e5e7eb;
+  background: #eef1f4;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
-  color: #4b5563;
+  color: #2ecc71;
   border: 2px solid #fff;
   box-shadow: 0 0 0 1px #e5e7eb;
   cursor: pointer;
+  overflow: hidden;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .dropdown-menu {
@@ -217,7 +225,7 @@ onMounted(() => {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  min-width: 120px;
+  min-width: 140px;
   z-index: 1000;
   padding: 8px 0;
 }
@@ -238,18 +246,20 @@ onMounted(() => {
   background: #f3f4f6;
 }
 
+.dropdown-divider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 4px 0;
+}
+
 .logout-btn {
   color: #e74c3c;
   font-weight: 600;
 }
 
-/* Responsywność */
 @media (max-width: 768px) {
-  .search-container, .btn-nav {
+  .search-container {
     display: none;
-  }
-  .logo-text {
-    font-size: 16px;
   }
 }
 </style>

@@ -12,6 +12,10 @@
       <div class="at-track-info">
         <div class="at-main-row">
           <h2 class="at-title">{{ pin.title }}</h2>
+          <button @click="toggleLike" :class="['btn-like', { 'is-liked': isLiked }]">
+            <span class="heart-icon">{{ isLiked ? '❤️' : '🤍' }}</span>
+            <span class="like-count">{{ currentLikeCount }}</span>
+          </button>
           <!-- Wyświetlanie dynamicznego BPM -->
         </div>
         <div class="at-tags">
@@ -40,6 +44,10 @@ const props = defineProps({
     required: true
   }
 });
+
+const isLiked = ref(props.pin.isLiked || false);
+const currentLikeCount = ref(props.pin.likeCount || 0);
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const atElement = ref(null);
 const isPlaying = ref(false);
@@ -111,6 +119,39 @@ const handleAction = () => {
   }
 };
 
+const toggleLike = async () => {
+  const visitorId = localStorage.getItem('visitorId');
+  const token = sessionStorage.getItem('token');
+  
+  try {
+    const headers = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(`${apiUrl}/api/Pins/${props.pin.id}/toggle-like?userId=${visitorId}`, {
+      method: 'POST',
+      headers: headers
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      isLiked.value = data.isLiked;
+      currentLikeCount.value = data.likeCount;
+
+      // Aktualizacja localStorage, aby HomeView wiedział o zmianie bez przeładowania
+      const likedPins = JSON.parse(localStorage.getItem('likedPins') || '[]');
+      if (isLiked.value) {
+        if (!likedPins.includes(props.pin.id)) likedPins.push(props.pin.id);
+      } else {
+        const index = likedPins.indexOf(props.pin.id);
+        if (index > -1) likedPins.splice(index, 1);
+      }
+      localStorage.setItem('likedPins', JSON.stringify(likedPins));
+    }
+  } catch (error) {
+    console.error("Błąd podczas lajkowania:", error);
+  }
+};
+
 onUnmounted(() => {
   api.value?.destroy();
 });
@@ -178,6 +219,25 @@ onUnmounted(() => {
   font-weight: 800;
   color: #24292e;
 }
+
+.btn-like {
+  background: none;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  padding: 4px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  margin-left: 10px;
+}
+
+.btn-like:hover { background: #f8f9fa; transform: scale(1.05); }
+.btn-like.is-liked { border-color: #ffb3b3; background: #fff5f5; }
+
+.heart-icon { font-size: 1.1rem; }
+.like-count { font-size: 0.9rem; font-weight: 700; color: #666; }
 
 .at-bpm-badge {
   background: #f1f8ff;

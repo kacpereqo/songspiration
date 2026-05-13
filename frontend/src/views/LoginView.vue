@@ -57,6 +57,10 @@ const handleLogin = async () => {
         sessionStorage.setItem('userName', data.user.email);
       }
 
+      if (data.user && data.user.id) {
+        sessionStorage.setItem('userId', data.user.id);
+      }
+
       // Przekierowanie na feed
       router.push('/');
     } else {

@@ -1,0 +1,30 @@
+@startuml Auth & Profile Flow
+
+actor User
+participant "LoginView" as Login
+participant "ProfileView" as Profile
+database "sessionStorage" as Storage
+participant "Backend API" as API
+
+== Logowanie ==
+User -> Login: Podaje e-mail i hasło
+Login -> API: POST /api/Users/login
+API --> Login: 200 OK (AccessToken, UserData)
+Login -> Storage: Zapisz token, userName, userId
+Login -> Profile: Przekierowanie (Router push)
+
+== Ładowanie Profilu ==
+Profile -> Storage: Pobierz token i userId
+Profile -> API: GET /api/Users/profile/{id} (Header: Bearer token)
+API --> Profile: Dane profilu (DisplayName, Bio, Stats)
+
+Profile -> API: GET /api/Pins/user/{id}
+API --> Profile: Lista pinów użytkownika
+
+== Zmiana Awatara ==
+User -> Profile: Wybiera plik i zatwierdza
+Profile -> API: POST /profile/{id}/avatar (FormData)
+API --> Profile: 200 OK
+Profile -> Profile: Odśwież dane (fetchData)
+
+@enduml
