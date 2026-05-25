@@ -5,3 +5,6 @@
 */obj/
 */bin/
 *.gp5
+
+appsettings.json
+appsettings.Development.json
