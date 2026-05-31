@@ -112,6 +112,7 @@ Filtrowanie odbywa się reaktywnie po stronie klienta na zestawie danych pobrany
 
 - **Logowanie (`LoginView`):** Formularz logowania e-mailem i hasłem. Po pomyślnym zalogowaniu, aplikacja zapisuje token `JWT` i nazwę użytkownika w `sessionStorage`, by w prawym górnym rogu strony wyświetlać inicjały użytkownika.
 - **Rejestracja (`RegisterView`):** Samodzielny widok zbierający wymagane dane użytkownika, posiadający walidację długości i struktury hasła, z możliwością przejścia do logowania po sukcesie.
+- **Resetowanie hasła (`ForgotPasswordView`, `ResetPasswordView`):** Widoki umożliwiające podanie adresu e-mail do wysyłki linku resetującego, a następnie odebranie parametru token z adresu URL i wymuszenie bezpiecznego wprowadzenia oraz potwierdzenia nowego hasła.
 
 - **Profil użytkownika:**
   - nagłówek profilu: awatar, `display_name`, krótki opis/bio (opcjonalne), statystyki (liczba dodanych pinów, suma polubień otrzymanych, liczba kolekcji)
@@ -146,3 +147,4 @@ Obecnie zarejestrowane decyzje:
 * **[ADR-0005](../adr/0005-use-jwt-for-stateless-auth.md):** Użycie JWT (JSON Web Tokens) do bezstanowej autoryzacji
 * **[ADR-0006](../adr/0006-use-alphatab-for-score-rendering.md):** Użycie biblioteki AlphaTab do renderowania tabulatur
 * **[ADR-0007](../adr/0007-user-ranking-and-relations.md):** Implementacja Systemu Rankingu i Relacji Użytkowników
+* **[ADR-0008](../adr/0008-password-reset-functionality.md):** Implementacja Bezpiecznego Resetu Hasła
