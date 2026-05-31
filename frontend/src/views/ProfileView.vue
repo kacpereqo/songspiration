@@ -21,13 +21,13 @@
           :class="{ active: activeTab === 'tworczosc' }" 
           @click="activeTab = 'tworczosc'"
         >
-          🎵 Moja twórczość
+          {{ isOwner ? '🎵 Moja twórczość' : '🎵 Piny użytkownika' }}
         </button>
         <button 
           :class="{ active: activeTab === 'polubione' }" 
           @click="activeTab = 'polubione'"
         >
-          ❤️ Polubione piny
+          {{ isOwner ? '❤️ Polubione piny' : '❤️ Polubione przez użytkownika' }}
         </button>
       </div>
 
@@ -47,7 +47,9 @@
 
       <PinGrid 
         :pins="pins" 
-        :title="activeTab === 'tworczosc' ? 'Twoja twórczość' : 'Polubione utwory'"
+        :title="activeTab === 'tworczosc' 
+          ? (isOwner ? 'Twoja twórczość' : 'Piny użytkownika') 
+          : (isOwner ? 'Polubione utwory' : 'Polubione przez użytkownika')"
         :stats="{ 
           pins: user.addedPinsCount || user.AddedPinsCount || 0, 
           likes: user.totalLikesReceived || user.TotalLikesReceived || 0 

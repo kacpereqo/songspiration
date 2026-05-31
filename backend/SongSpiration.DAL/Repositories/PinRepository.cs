@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SongSpiration.DAL.Interfaces;
 using SongSpiration.Models.Entities;
+using PinVisibility = SongSpiration.Models.PinVisibility;
 
 namespace SongSpiration.DAL.Repositories;
 
@@ -140,34 +141,30 @@ public class PinRepository : IPinRepository
         .Include(p => p.Likes) 
         .ToListAsync();
     }
-    public async Task<IEnumerable<Pin>> GetPinsByUserIdAsync(Guid userId, string? sortBy, string? sortOrder)
+    public async Task<IEnumerable<Pin>> GetPinsByUserIdAsync(Guid userId, string? sortBy = null, string? sortOrder = null, bool showPrivate = false)
     {
-        // 1. Tworzymy bazowe zapytanie dla pinów danego użytkownika
-        var query = _db.Pins
-            .Where(p => p.OwnerId == userId);
+        var query = _db.Pins.Where(p => p.OwnerId == userId);
 
-        // Koniunkcja pomocnicza do kierunku sortowania (Rosnąco / Malejąco)
+        if (!showPrivate)
+        {
+            query = query.Where(p => p.Visibility != PinVisibility.Private);
+        }
+
         bool isAsc = sortOrder != null && sortOrder.Equals("asc", StringComparison.OrdinalIgnoreCase);
 
-        // 2. Logika sortowania po ilości lajków lub po dacie
         if (sortBy != null && sortBy.Equals("likes", StringComparison.OrdinalIgnoreCase))
         {
-            query = isAsc 
-                ? query.OrderBy(p => p.Likes.Count) 
-                : query.OrderByDescending(p => p.Likes.Count);
+            query = isAsc ? query.OrderBy(p => p.Likes.Count) : query.OrderByDescending(p => p.Likes.Count);
         }
-        else // Domyślnie (gdy sortBy == "newest" lub cokolwiek innego) sortujemy po dacie utworzenia
+        else
         {
-            query = isAsc 
-                ? query.OrderBy(p => p.CreatedAt) 
-                : query.OrderByDescending(p => p.CreatedAt);
+            query = isAsc ? query.OrderBy(p => p.CreatedAt) : query.OrderByDescending(p => p.CreatedAt);
         }
 
-        // 3. Pobieramy dane z bazy wraz z relacjami
         return await query
             .Include(p => p.PinGenres)
                 .ThenInclude(pg => pg.Genre)
-            .Include(p => p.Likes) // Dołączamy lajki, żeby MapToDto w serwisie poprawnie policzył Likes.Count
+            .Include(p => p.Likes)
             .ToListAsync();
     }
 }
