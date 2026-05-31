@@ -116,4 +116,28 @@ public class PinRepository : IPinRepository
     }
 
     public Task<int> SaveChangesAsync() => _db.SaveChangesAsync();
+
+    public async Task<IEnumerable<Pin>> GetLikedPinsByUserIdAsync(Guid userId, string? sortBy, string? sortOrder)
+{
+    // Budujemy zapytanie na encjach bazy danych
+    var query = _db.Pins
+        .Where(p => p.Likes.Any(l => l.UserId == userId));
+
+    // Filtrowanie po dacie dodania pinu (wymóg dla polubionych)
+    if (sortOrder != null && sortOrder.Equals("asc", StringComparison.OrdinalIgnoreCase))
+    {
+        query = query.OrderBy(p => p.CreatedAt);
+    }
+    else
+    {
+        query = query.OrderByDescending(p => p.CreatedAt);
+    }
+
+    // Wyciągamy dane z bazy razem z relacjami gatunków oraz lajków (żeby MapToDto policzył LikeCount)
+    return await query
+        .Include(p => p.PinGenres)
+            .ThenInclude(pg => pg.Genre)
+        .Include(p => p.Likes) 
+        .ToListAsync();
+}
 }

@@ -1,6 +1,6 @@
 <template>
   <section class="pins-display-area">
-    <h3 class="area-title">Twoja twórczość</h3>
+    <h3 class="area-title">{{ title }}</h3>
     <div class="stats-row">
       <span>Piny: <strong>{{ stats.pins || 0 }}</strong></span>
       <span>Polubienia: <strong>{{ stats.likes || 0 }}</strong></span>
@@ -12,12 +12,13 @@
         <p class="pin-meta">{{ getInstrumentName(pin.instrument) }}</p>
       </div>
     </div>
-    <div v-else class="empty-state">Nie dodałeś jeszcze żadnych pinów.</div>
+    <div v-else class="empty-state">Brak utworów do wyświetlenia w tej sekcji.</div>
   </section>
 </template>
 
 <script setup>
-defineProps(['pins', 'stats']);
+// Dodano 'title' do odbieranych właściwości (Props)
+defineProps(['pins', 'stats', 'title']);
 defineEmits(['open-pin']);
 
 const getInstrumentName = (id) => {
@@ -28,7 +29,7 @@ const getInstrumentName = (id) => {
 
 <style scoped>
 .pins-display-area { background: #ffffff; border-radius: 20px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-.area-title { font-size: 20px; margin-bottom: 20px; }
+.area-title { font-size: 20px; margin-bottom: 20px; font-weight: 700; }
 .stats-row { margin-bottom: 20px; display: flex; gap: 20px; font-size: 14px; color: #64748b; }
 .pins-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
 .pin-card-simple { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; transition: 0.2s; cursor: pointer; }

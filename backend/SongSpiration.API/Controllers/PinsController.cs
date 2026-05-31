@@ -201,10 +201,21 @@ namespace SongSpiration.API.Controllers
         }
 
         [HttpGet("user/{userId}/liked")]
-        public ActionResult<IEnumerable<PinDto>> GetUserLikedPins(Guid userId)
+        public async Task<ActionResult<IEnumerable<PinDto>>> GetUserLikedPins(
+            Guid userId,
+            [FromQuery] string sortBy = "newest",
+            [FromQuery] string sortOrder = "desc")
         {
-            // TODO: Dla ciebie Kacperku ;3
-            return Ok(new List<PinDto>()); 
+            try
+            {
+                // Wywołujemy serwis, przekazując filtry sortowania
+                var likedPins = await _pinService.GetLikedPinsByUserIdAsync(userId, sortBy, sortOrder);
+                return Ok(likedPins);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Błąd podczas pobierania polubionych pinów użytkownika.", details = ex.Message });
+            }
         }
     }
 }
