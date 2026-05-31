@@ -56,28 +56,7 @@ interface Genre {
 export default {
   name: 'GenresView',
   setup() {
-    const genres = ref<Genre[]>([
-      {
-        id: 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8',
-        name: 'Rock',
-        slug: 'rock'
-      },
-      {
-        id: 'b2c3d4e5-f6g7-8901-h2i3-j4k5l6m7n8o9',
-        name: 'Pop',
-        slug: 'pop'
-      },
-      {
-        id: 'c3d4e5f6-g7h8-9012-i3j4-k5l6m7n8o9p0',
-        name: 'Jazz',
-        slug: 'jazz'
-      },
-      {
-        id: 'd4e5f6g7-h8i9-0123-j4k5-l6m7n8o9p0q1',
-        name: 'Hip-Hop',
-        slug: 'hip-hop'
-      }
-    ]);
+    const genres = ref<Genre[]>([]);
     const searchTerm = ref('');
     const showModal = ref(false);
     const isEditMode = ref(false);
@@ -92,8 +71,17 @@ export default {
       };
     };
 
-    const fetchGenres = () => {
-      // No need to fetch genres from API, as they are hardcoded
+    const fetchGenres = async () => {
+      try {
+        const response = await axios.get('/api/Genre', getAxiosConfig());
+        genres.value = response.data.map((genre: any) => ({
+          id: genre.id,
+          name: genre.name,
+          slug: genre.slug
+        }));
+      } catch (error) {
+        console.error('Error fetching genres:', error);
+      }
     };
 
     const addGenre = () => {
@@ -108,33 +96,37 @@ export default {
       showModal.value = true;
     };
 
-    const saveGenre = () => {
-      if (isEditMode.value) {
-        // Edit existing genre
-        genres.value = genres.value.map(genre => {
-          if (genre.id === currentGenre.value.id) {
-            return { ...genre, name: currentGenre.value.name };
+    const saveGenre = async () => {
+      try {
+        if (isEditMode.value) {
+          // Edit existing genre
+          const response = await axios.post('/api/Genre', {
+            id: currentGenre.value.id,
+            name: currentGenre.value.name
+          }, getAxiosConfig());
+          const index = genres.value.findIndex(genre => genre.id === currentGenre.value.id);
+          if (index !== -1) {
+            genres.value[index] = response.data;
           }
-          return genre;
-        });
-      } else {
-        // Add new genre
-        const newGenre = {
-          id: 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-          }),
-          name: currentGenre.value.name,
-          slug: currentGenre.value.name.toLowerCase().replace(/\s+/g, '-')
-        };
-        genres.value.push(newGenre);
+        } else {
+          // Add new genre
+          const response = await axios.post('/api/Genre', {
+            name: currentGenre.value.name
+          }, getAxiosConfig());
+          genres.value.push(response.data);
+        }
+        showModal.value = false;
+      } catch (error) {
+        console.error('Error saving genre:', error);
       }
-      showModal.value = false;
     };
 
-    const deleteGenre = (id: string) => {
-      genres.value = genres.value.filter(genre => genre.id !== id);
+    const deleteGenre = async (id: string) => {
+      try {
+        genres.value = genres.value.filter(genre => genre.id !== id);
+      } catch (error) {
+        console.error('Error deleting genre:', error);
+      }
     };
 
     const cancel = () => {
