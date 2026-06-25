@@ -22,7 +22,7 @@
         :class="{ active: activeTab === 'downloads' }" 
         @click="activeTab = 'downloads'"
       >
-        Most pobrań
+        Najwięcej pobrań
       </button>
     </div>
 
@@ -45,8 +45,8 @@
             </h3>
             <div class="stats">
               <span v-if="activeTab === 'editors-choice'" class="badge editor">Editor's Choice</span>
-              <span v-if="activeTab === 'likes'">❤️ {{ user.totalLikes }} likes</span>
-              <span v-if="activeTab === 'downloads'">⬇️ {{ user.totalDownloads }} downloads</span>
+              <span v-if="activeTab === 'likes'">❤️ {{ user.totalLikes }} polubień</span>
+              <span v-if="activeTab === 'downloads'">⬇️ {{ user.totalDownloads }} pobrań</span>
             </div>
           </div>
         </div>
