@@ -85,14 +85,13 @@ var app = builder.Build();
 
 app.UseCors("AllowAll");
 
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI(c => 
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "SongSpiration API V1");
     });
-}
+
 
 var provider = new FileExtensionContentTypeProvider();
 provider.Mappings[".gp"] = "application/octet-stream";
